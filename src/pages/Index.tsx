@@ -1,347 +1,405 @@
-import { useEffect, useRef, useState, useCallback } from "react";
-import { motion } from "framer-motion";
-import { Github, Linkedin, Mail, ArrowUpRight, ExternalLink } from "lucide-react";
+import { useEffect, useRef, useCallback, useState } from "react";
+import { motion, useScroll, useTransform, useSpring, useInView } from "framer-motion";
+import { Github, Linkedin, Mail, ArrowUpRight, ArrowDown } from "lucide-react";
 
-/* ─── Data (single source of truth — no repetition) ─── */
-const NAV = ["about", "experience", "projects"] as const;
-
-const EXPERIENCE = [
-  {
-    period: "2025 — Present",
-    title: "Software Developer",
-    company: "Saap Technologies",
-    companyUrl: "#",
-    desc: "Building Novo Wellness — an AI student mental health platform. Shipped an OpenAI chatbot, risk‑prediction engine, and counselor dashboard in a lean team of three.",
-    tech: ["React", "Tailwind", "OpenAI API", "Python", "Firebase"],
-  },
-  {
-    period: "Dec 2024 — May 2025",
-    title: "Software Developer",
-    company: "Novo Neuro Tech",
-    companyUrl: "#",
-    desc: "Built an AI neurological risk prediction system — doctor uploads a brain scan and gets a disease risk percentage using custom ML models and computer vision.",
-    tech: ["Python", "Machine Learning", "Computer Vision", "React"],
-  },
-  {
-    period: "2024",
-    title: "Web Developer",
-    company: "Lyric Video Makers",
-    companyUrl: "#",
-    desc: "Designed and shipped a production landing page for a video production studio with portfolio showcase, testimonials, and pricing integration.",
-    tech: ["React", "Tailwind", "Firebase"],
-  },
-];
-
+/* ─────────────────── Data ─────────────────── */
 const PROJECTS = [
   {
     title: "Novo Wellness",
-    desc: "Full‑stack AI mental health platform for schools. Students chat with an empathetic AI → system predicts risk scores and alerts counselors in real‑time.",
+    tagline: "AI mental health for schools",
+    desc: "Students chat with an empathetic AI chatbot. The system predicts risk scores in real-time and alerts school counselors before it's too late.",
     tech: ["React", "OpenAI", "Python", "Firebase"],
-    link: "#",
+    gradient: "from-emerald-500/20 via-teal-500/10 to-transparent",
     status: "Live",
-    featured: true,
+    role: "Full-Stack · AI Engineer",
   },
   {
     title: "Neuro Risk Engine",
-    desc: "Upload a brain scan → get a risk percentage for neurological disorders. AI‑powered diagnostic assistant built for doctors.",
-    tech: ["Python", "ML", "Computer Vision"],
-    link: "#",
+    tagline: "Brain scan → disease probability",
+    desc: "Doctor uploads a brain scan. ML model returns a risk percentage for neurological disorders. Built for speed and accuracy in clinical settings.",
+    tech: ["Python", "ML", "Computer Vision", "React"],
+    gradient: "from-blue-500/20 via-indigo-500/10 to-transparent",
     status: "Shipped",
+    role: "ML Engineer",
   },
   {
     title: "Lyric Video Makers",
-    desc: "High-converting landing page for a creative video studio with motion graphics showcase and client portal.",
+    tagline: "Creative studio landing page",
+    desc: "High-converting production website with motion graphics showcase, client testimonials, and an integrated booking system.",
     tech: ["React", "Tailwind", "Firebase"],
-    link: "#",
+    gradient: "from-orange-500/20 via-rose-500/10 to-transparent",
     status: "Live",
+    role: "Web Developer",
   },
 ];
 
-const SOCIALS = [
-  { icon: Github, href: "https://github.com", label: "GitHub" },
-  { icon: Linkedin, href: "https://linkedin.com", label: "LinkedIn" },
-  { icon: Mail, href: "mailto:sravan@example.com", label: "Email" },
+const TIMELINE = [
+  { year: "2025", label: "Saap Technologies", desc: "Building Novo Wellness — AI mental health platform" },
+  { year: "2024", label: "Novo Neuro Tech", desc: "AI neurological risk prediction system" },
+  { year: "2024", label: "Freelance", desc: "Shipped production websites for creative studios" },
 ];
 
-/* ─── Cursor Spotlight Hook ─── */
-function useSpotlight() {
-  const ref = useRef<HTMLDivElement>(null);
-  const handleMouseMove = useCallback((e: MouseEvent) => {
-    if (ref.current) {
-      ref.current.style.setProperty("--spotlight-x", `${e.clientX}px`);
-      ref.current.style.setProperty("--spotlight-y", `${e.clientY}px`);
-    }
-  }, []);
+const STACK = ["Python", "React", "TypeScript", "OpenAI", "Tailwind", "Firebase", "SQL", "NumPy", "Pandas", "Git", "ML", "Computer Vision", "Framer Motion", "Figma"];
 
+/* ─────────────────── Hooks ─────────────────── */
+function useMousePosition() {
+  const [pos, setPos] = useState({ x: 0, y: 0 });
   useEffect(() => {
-    window.addEventListener("mousemove", handleMouseMove);
-    return () => window.removeEventListener("mousemove", handleMouseMove);
-  }, [handleMouseMove]);
-
-  return ref;
+    const handler = (e: MouseEvent) => setPos({ x: e.clientX, y: e.clientY });
+    window.addEventListener("mousemove", handler);
+    return () => window.removeEventListener("mousemove", handler);
+  }, []);
+  return pos;
 }
 
-/* ─── Active Section Hook ─── */
-function useActiveSection() {
-  const [active, setActive] = useState<string>("about");
-
-  useEffect(() => {
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            setActive(entry.target.id);
-          }
-        });
-      },
-      { rootMargin: "-40% 0px -40% 0px" }
-    );
-
-    NAV.forEach((id) => {
-      const el = document.getElementById(id);
-      if (el) observer.observe(el);
-    });
-
-    return () => observer.disconnect();
-  }, []);
-
-  return active;
+/* ─────────────────── Animated Text ─────────────────── */
+function AnimatedWords({ text, className = "", delay = 0 }: { text: string; className?: string; delay?: number }) {
+  const words = text.split(" ");
+  return (
+    <span className={className}>
+      {words.map((word, i) => (
+        <span key={i} className="inline-block overflow-hidden mr-[0.3em]">
+          <motion.span
+            className="inline-block"
+            initial={{ y: "100%", opacity: 0 }}
+            animate={{ y: 0, opacity: 1 }}
+            transition={{ duration: 0.6, delay: delay + i * 0.04, ease: [0.25, 0.46, 0.45, 0.94] }}
+          >
+            {word}
+          </motion.span>
+        </span>
+      ))}
+    </span>
+  );
 }
 
-/* ─── Main Component ─── */
+/* ─────────────────── Section Reveal ─────────────────── */
+function RevealOnScroll({ children, className = "" }: { children: React.ReactNode; className?: string }) {
+  const ref = useRef(null);
+  const isInView = useInView(ref, { once: true, margin: "-100px" });
+  return (
+    <div ref={ref} className={className}>
+      <motion.div
+        initial={{ opacity: 0, y: 60 }}
+        animate={isInView ? { opacity: 1, y: 0 } : {}}
+        transition={{ duration: 0.7, ease: [0.25, 0.46, 0.45, 0.94] }}
+      >
+        {children}
+      </motion.div>
+    </div>
+  );
+}
+
+/* ─────────────────── Main Page ─────────────────── */
 const Index = () => {
-  const spotlightRef = useSpotlight();
-  const activeSection = useActiveSection();
+  const mouse = useMousePosition();
+  const { scrollYProgress } = useScroll();
+  const smoothProgress = useSpring(scrollYProgress, { stiffness: 100, damping: 30 });
+  const heroOpacity = useTransform(scrollYProgress, [0, 0.15], [1, 0]);
+  const heroScale = useTransform(scrollYProgress, [0, 0.15], [1, 0.95]);
 
   return (
-    <div
-      ref={spotlightRef}
-      className="relative min-h-screen bg-background"
-      style={{
-        backgroundImage: `radial-gradient(600px circle at var(--spotlight-x, 50%) var(--spotlight-y, 50%), hsl(var(--primary) / 0.06), transparent 60%)`,
-      }}
-    >
-      <div className="mx-auto max-w-screen-xl px-6 py-12 md:px-12 md:py-20 lg:px-24 lg:py-0 lg:flex lg:justify-between lg:gap-4">
-        
-        {/* ===== LEFT — Sticky Sidebar ===== */}
-        <header className="lg:sticky lg:top-0 lg:flex lg:max-h-screen lg:w-1/2 lg:flex-col lg:justify-between lg:py-24">
-          <div>
-            <motion.h1
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5 }}
-              className="text-5xl font-bold tracking-tight text-foreground sm:text-6xl"
-            >
-              Sravan Kumar<span className="text-gradient">.</span>
-            </motion.h1>
+    <div className="noise relative">
+      {/* Progress bar */}
+      <motion.div
+        className="fixed top-0 left-0 right-0 h-[2px] bg-primary z-50 origin-left"
+        style={{ scaleX: smoothProgress }}
+      />
 
-            <motion.h2
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: 0.1 }}
-              className="mt-3 text-lg font-medium text-muted-foreground"
-            >
-              AI Product Engineer & Startup Builder
-            </motion.h2>
+      {/* Cursor glow */}
+      <div
+        className="fixed pointer-events-none z-40 w-[500px] h-[500px] rounded-full opacity-[0.07] transition-all duration-300 ease-out"
+        style={{
+          left: mouse.x - 250,
+          top: mouse.y - 250,
+          background: `radial-gradient(circle, hsl(var(--primary)), transparent 70%)`,
+        }}
+      />
 
-            <motion.p
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: 0.2 }}
-              className="mt-4 max-w-xs text-sm leading-relaxed text-muted-foreground"
-            >
-              I research hard problems, prototype fast, and ship AI systems that people actually use.
-            </motion.p>
+      {/* ═══════ HERO ═══════ */}
+      <motion.section
+        style={{ opacity: heroOpacity, scale: heroScale }}
+        className="h-screen flex flex-col justify-center items-center relative overflow-hidden px-6"
+      >
+        {/* Background orbs */}
+        <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-primary/5 rounded-full blur-[120px]" />
+        <div className="absolute bottom-1/4 right-1/4 w-72 h-72 bg-primary/3 rounded-full blur-[100px]" />
 
-            {/* Nav */}
-            <nav className="hidden lg:block mt-16">
-              <ul className="space-y-1">
-                {NAV.map((id, i) => (
-                  <motion.li
-                    key={id}
-                    initial={{ opacity: 0, x: -12 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    transition={{ duration: 0.3, delay: 0.3 + i * 0.05 }}
-                  >
-                    <a
-                      href={`#${id}`}
-                      className={`group flex items-center gap-4 py-2 text-xs font-bold uppercase tracking-widest transition-all duration-200 ${
-                        activeSection === id
-                          ? "text-foreground"
-                          : "text-muted-foreground hover:text-foreground"
-                      }`}
-                    >
-                      <span
-                        className={`h-px transition-all duration-200 ${
-                          activeSection === id
-                            ? "w-16 bg-foreground"
-                            : "w-8 bg-muted-foreground group-hover:w-16 group-hover:bg-foreground"
-                        }`}
-                      />
-                      {id}
-                    </a>
-                  </motion.li>
-                ))}
-              </ul>
-            </nav>
-          </div>
-
-          {/* Socials */}
-          <motion.ul
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 0.5, delay: 0.5 }}
-            className="mt-8 flex items-center gap-5 lg:mt-0"
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.3 }}
+          className="text-center"
+        >
+          {/* Eyebrow */}
+          <motion.div
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.2, duration: 0.5 }}
+            className="mb-8"
           >
-            {SOCIALS.map((s) => (
-              <li key={s.label}>
-                <a
-                  href={s.href}
-                  target={s.href.startsWith("mailto") ? undefined : "_blank"}
-                  rel="noopener noreferrer"
-                  aria-label={s.label}
-                  className="block text-muted-foreground hover:text-foreground transition-colors duration-200"
-                >
-                  <s.icon className="w-5 h-5" />
-                </a>
-              </li>
-            ))}
-          </motion.ul>
-        </header>
+            <span className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-primary/20 text-primary text-xs font-mono tracking-wider uppercase">
+              <span className="w-1.5 h-1.5 rounded-full bg-primary animate-pulse" />
+              Available for projects
+            </span>
+          </motion.div>
 
-        {/* ===== RIGHT — Scrollable Content ===== */}
-        <main className="pt-24 lg:w-1/2 lg:py-24">
-          
-          {/* About */}
-          <section id="about" className="mb-16 scroll-mt-16 lg:mb-24 lg:scroll-mt-24">
-            <SectionLabel>About</SectionLabel>
-            <div className="space-y-4 text-sm leading-relaxed text-muted-foreground">
-              <p>
-                I'm an AI product engineer who lives at the intersection of{" "}
-                <Highlight>research and shipping</Highlight>. I don't just build features — I dig into the problem space, 
-                prototype ideas in days, and push them to production.
-              </p>
-              <p>
-                Currently at <Highlight>Saap Technologies</Highlight>, I'm building an AI‑powered mental health platform 
-                for schools — from an empathetic chatbot to real‑time risk prediction for counselors. Before that, I built 
-                a neurological risk assessment tool using brain scans and ML at Novo Neuro Tech.
-              </p>
-              <p>
-                I'm not looking for a job — I'm building the future. My toolkit spans{" "}
-                <Highlight>Python, React, OpenAI, ML/CV, and Firebase</Highlight>. I think in systems, 
-                ship in sprints, and believe the best products come from obsessing over problems nobody else notices.
-              </p>
-            </div>
-          </section>
+          {/* Giant name */}
+          <h1 className="font-display font-black text-foreground leading-[0.85] tracking-[-0.04em]">
+            <AnimatedWords
+              text="Sravan"
+              className="block text-[clamp(3.5rem,12vw,10rem)]"
+              delay={0.3}
+            />
+            <AnimatedWords
+              text="Kumar."
+              className="block text-[clamp(3.5rem,12vw,10rem)] text-gradient"
+              delay={0.5}
+            />
+          </h1>
 
-          {/* Experience */}
-          <section id="experience" className="mb-16 scroll-mt-16 lg:mb-24 lg:scroll-mt-24">
-            <SectionLabel>Experience</SectionLabel>
-            <div className="space-y-2">
-              {EXPERIENCE.map((exp, i) => (
-                <motion.a
-                  key={i}
-                  href={exp.companyUrl}
-                  initial={{ opacity: 0, y: 12 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ duration: 0.3, delay: i * 0.06 }}
-                  className="group relative grid pb-1 transition-all sm:grid-cols-8 sm:gap-8 md:gap-4 rounded-lg p-4 -mx-4 hover:bg-card/80 hover:shadow-[inset_0_1px_0_0_rgba(148,163,184,0.08)] hover:drop-shadow-lg cursor-pointer"
-                >
-                  <header className="text-xs font-mono uppercase tracking-wide text-muted-foreground sm:col-span-2 mt-1 mb-2 sm:mb-0 whitespace-nowrap">
-                    {exp.period}
-                  </header>
-                  <div className="sm:col-span-6">
-                    <h3 className="font-medium text-foreground group-hover:text-primary transition-colors leading-snug flex items-center gap-1">
-                      {exp.title} · {exp.company}
-                      <ArrowUpRight className="w-3.5 h-3.5 opacity-0 -translate-y-0.5 translate-x-0.5 group-hover:opacity-100 group-hover:translate-y-0 group-hover:translate-x-0 transition-all duration-200 text-primary" />
-                    </h3>
-                    <p className="mt-2 text-sm leading-relaxed text-muted-foreground">{exp.desc}</p>
-                    <ul className="mt-3 flex flex-wrap gap-2">
-                      {exp.tech.map((t) => (
-                        <li key={t}>
-                          <span className="inline-flex items-center rounded-full bg-primary/10 px-3 py-1 text-xs font-medium text-primary">
-                            {t}
-                          </span>
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-                </motion.a>
-              ))}
-            </div>
-          </section>
+          {/* Subtitle */}
+          <motion.p
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.9, duration: 0.6 }}
+            className="mt-8 text-lg md:text-xl text-muted-foreground max-w-lg mx-auto leading-relaxed"
+          >
+            I build AI systems that solve real problems.
+            <br />
+            <span className="text-foreground font-medium">Engineer. Builder. Startup founder.</span>
+          </motion.p>
 
-          {/* Projects */}
-          <section id="projects" className="mb-16 scroll-mt-16 lg:mb-24 lg:scroll-mt-24">
-            <SectionLabel>Projects</SectionLabel>
-            <div className="space-y-2">
-              {PROJECTS.map((proj, i) => (
-                <motion.a
-                  key={i}
-                  href={proj.link}
-                  initial={{ opacity: 0, y: 12 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ duration: 0.3, delay: i * 0.06 }}
-                  className="group relative grid pb-1 transition-all sm:grid-cols-8 sm:gap-8 md:gap-4 rounded-lg p-4 -mx-4 hover:bg-card/80 hover:shadow-[inset_0_1px_0_0_rgba(148,163,184,0.08)] hover:drop-shadow-lg cursor-pointer"
-                >
-                  <div className="sm:col-span-2 mt-1 mb-2 sm:mb-0">
-                    <span className={`inline-flex items-center gap-1.5 text-xs font-mono uppercase tracking-wide ${
-                      proj.status === "Live" ? "text-primary" : "text-muted-foreground"
-                    }`}>
-                      <span className={`w-1.5 h-1.5 rounded-full ${proj.status === "Live" ? "bg-primary animate-pulse" : "bg-muted-foreground"}`} />
-                      {proj.status}
-                    </span>
-                  </div>
-                  <div className="sm:col-span-6">
-                    <h3 className="font-medium text-foreground group-hover:text-primary transition-colors leading-snug flex items-center gap-1">
-                      {proj.title}
-                      {proj.featured && (
-                        <span className="ml-2 text-[10px] font-mono uppercase tracking-wider text-primary bg-primary/10 px-2 py-0.5 rounded">Featured</span>
-                      )}
-                      <ExternalLink className="w-3.5 h-3.5 ml-1 opacity-0 group-hover:opacity-100 transition-opacity duration-200 text-primary" />
-                    </h3>
-                    <p className="mt-2 text-sm leading-relaxed text-muted-foreground">{proj.desc}</p>
-                    <ul className="mt-3 flex flex-wrap gap-2">
-                      {proj.tech.map((t) => (
-                        <li key={t}>
-                          <span className="inline-flex items-center rounded-full bg-primary/10 px-3 py-1 text-xs font-medium text-primary">
-                            {t}
-                          </span>
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-                </motion.a>
-              ))}
-            </div>
-          </section>
+          {/* CTA */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 1.1, duration: 0.5 }}
+            className="mt-10 flex items-center justify-center gap-4"
+          >
+            <a
+              href="mailto:sravan@example.com"
+              className="group relative inline-flex items-center gap-2 px-7 py-3.5 bg-primary text-primary-foreground font-semibold rounded-full text-sm overflow-hidden transition-all hover:shadow-[0_0_30px_hsl(var(--primary)/0.3)]"
+            >
+              <span className="relative z-10 flex items-center gap-2">
+                Get in touch
+                <ArrowUpRight className="w-4 h-4 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
+              </span>
+            </a>
+            <a
+              href="#work"
+              className="inline-flex items-center gap-2 px-7 py-3.5 border border-border text-foreground/80 font-medium rounded-full text-sm hover:bg-card hover:text-foreground transition-all"
+            >
+              See my work
+            </a>
+          </motion.div>
+        </motion.div>
 
-          {/* Footer */}
-          <footer className="pb-16 text-sm text-muted-foreground max-w-md">
-            <p>
-              Built with <Highlight>React</Highlight>, <Highlight>Tailwind CSS</Highlight>, and <Highlight>Framer Motion</Highlight>. 
-              Inspired by <a href="https://brittanychiang.com" target="_blank" rel="noopener noreferrer" className="text-foreground hover:text-primary transition-colors">Brittany Chiang</a>'s design philosophy.
+        {/* Scroll indicator */}
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 1.5, duration: 0.5 }}
+          className="absolute bottom-10 left-1/2 -translate-x-1/2"
+        >
+          <motion.div
+            animate={{ y: [0, 8, 0] }}
+            transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
+          >
+            <ArrowDown className="w-5 h-5 text-muted-foreground" />
+          </motion.div>
+        </motion.div>
+      </motion.section>
+
+      {/* ═══════ STORY INTRO ═══════ */}
+      <section className="relative py-32 md:py-40 px-6">
+        <div className="max-w-3xl mx-auto">
+          <RevealOnScroll>
+            <p className="text-2xl md:text-4xl lg:text-5xl font-display font-bold text-foreground leading-[1.2] tracking-tight">
+              I don't just write code —{" "}
+              <span className="text-gradient">I find problems worth solving</span>,
+              prototype obsessively, and ship products that people actually depend on.
             </p>
-          </footer>
-        </main>
-      </div>
+          </RevealOnScroll>
+          <RevealOnScroll className="mt-10">
+            <p className="text-base md:text-lg text-muted-foreground leading-relaxed max-w-2xl">
+              Currently engineering AI systems at Saap Technologies, where I'm building 
+              a mental health platform that serves real students in real schools. 
+              Previously built ML-powered diagnostic tools for neurologists.
+            </p>
+          </RevealOnScroll>
+        </div>
+      </section>
+
+      {/* ═══════ PROJECTS ═══════ */}
+      <section id="work" className="relative py-20 md:py-32 px-6">
+        <div className="max-w-6xl mx-auto">
+          <RevealOnScroll>
+            <div className="flex items-center gap-4 mb-16">
+              <span className="text-xs font-mono text-primary uppercase tracking-[0.3em]">Selected work</span>
+              <div className="flex-1 h-px bg-border" />
+              <span className="text-xs font-mono text-muted-foreground">{PROJECTS.length} projects</span>
+            </div>
+          </RevealOnScroll>
+
+          <div className="space-y-8">
+            {PROJECTS.map((project, i) => (
+              <RevealOnScroll key={i}>
+                <div className={`group relative rounded-2xl border border-border bg-card overflow-hidden transition-all duration-500 hover:border-primary/30 hover:shadow-[0_0_60px_-15px_hsl(var(--primary)/0.15)]`}>
+                  {/* Gradient overlay */}
+                  <div className={`absolute inset-0 bg-gradient-to-br ${project.gradient} opacity-0 group-hover:opacity-100 transition-opacity duration-700`} />
+                  
+                  <div className="relative p-8 md:p-12">
+                    <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-6">
+                      <div className="flex-1">
+                        {/* Status + Role */}
+                        <div className="flex items-center gap-3 mb-4">
+                          <span className={`inline-flex items-center gap-1.5 text-xs font-mono uppercase tracking-wider ${project.status === "Live" ? "text-primary" : "text-muted-foreground"}`}>
+                            <span className={`w-1.5 h-1.5 rounded-full ${project.status === "Live" ? "bg-primary animate-pulse" : "bg-muted-foreground"}`} />
+                            {project.status}
+                          </span>
+                          <span className="text-xs text-muted-foreground">·</span>
+                          <span className="text-xs text-muted-foreground font-mono">{project.role}</span>
+                        </div>
+
+                        {/* Title */}
+                        <h3 className="text-3xl md:text-4xl font-display font-bold text-foreground group-hover:text-primary transition-colors duration-300 tracking-tight">
+                          {project.title}
+                        </h3>
+                        <p className="mt-1 text-sm text-muted-foreground font-medium">{project.tagline}</p>
+
+                        {/* Description */}
+                        <p className="mt-4 text-muted-foreground leading-relaxed max-w-xl text-sm md:text-base">
+                          {project.desc}
+                        </p>
+
+                        {/* Tech */}
+                        <div className="mt-6 flex flex-wrap gap-2">
+                          {project.tech.map((t) => (
+                            <span key={t} className="text-xs font-medium px-3 py-1 rounded-full bg-primary/10 text-primary border border-primary/10">
+                              {t}
+                            </span>
+                          ))}
+                        </div>
+                      </div>
+
+                      {/* Project number */}
+                      <span className="hidden md:block text-8xl font-display font-black text-foreground/[0.03] group-hover:text-primary/[0.08] transition-colors duration-500 leading-none">
+                        0{i + 1}
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              </RevealOnScroll>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ═══════ JOURNEY TIMELINE ═══════ */}
+      <section className="relative py-20 md:py-32 px-6">
+        <div className="max-w-4xl mx-auto">
+          <RevealOnScroll>
+            <div className="flex items-center gap-4 mb-16">
+              <span className="text-xs font-mono text-primary uppercase tracking-[0.3em]">Journey</span>
+              <div className="flex-1 h-px bg-border" />
+            </div>
+          </RevealOnScroll>
+
+          <div className="relative">
+            {/* Vertical line */}
+            <div className="absolute left-[18px] top-2 bottom-2 w-px bg-border md:left-1/2 md:-translate-x-px" />
+
+            {TIMELINE.map((item, i) => (
+              <RevealOnScroll key={i}>
+                <div className={`relative flex items-start gap-8 mb-12 last:mb-0 ${i % 2 === 0 ? "md:flex-row" : "md:flex-row-reverse"}`}>
+                  {/* Dot */}
+                  <div className="absolute left-[14px] md:left-1/2 md:-translate-x-1/2 w-[10px] h-[10px] rounded-full bg-primary border-2 border-background z-10 mt-1.5" />
+                  
+                  {/* Content */}
+                  <div className={`ml-12 md:ml-0 md:w-[45%] ${i % 2 === 0 ? "md:text-right md:pr-12" : "md:text-left md:pl-12"}`}>
+                    <span className="text-xs font-mono text-primary tracking-wider">{item.year}</span>
+                    <h4 className="text-xl font-display font-bold text-foreground mt-1">{item.label}</h4>
+                    <p className="text-sm text-muted-foreground mt-1">{item.desc}</p>
+                  </div>
+                </div>
+              </RevealOnScroll>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ═══════ TECH MARQUEE ═══════ */}
+      <section className="relative py-16 border-y border-border overflow-hidden">
+        <div className="flex animate-scroll-left whitespace-nowrap">
+          {[...STACK, ...STACK, ...STACK].map((tech, i) => (
+            <span key={i} className="mx-8 text-2xl md:text-4xl font-display font-bold text-foreground/[0.06] hover:text-primary/20 transition-colors duration-300 cursor-default select-none">
+              {tech}
+            </span>
+          ))}
+        </div>
+      </section>
+
+      {/* ═══════ CONTACT ═══════ */}
+      <section className="relative py-32 md:py-40 px-6">
+        <div className="max-w-3xl mx-auto text-center">
+          <RevealOnScroll>
+            <span className="text-xs font-mono text-primary uppercase tracking-[0.3em] mb-8 block">What's next?</span>
+            <h2 className="text-4xl md:text-6xl lg:text-7xl font-display font-black text-foreground tracking-tight leading-[0.9]">
+              Let's build
+              <br />
+              <span className="text-gradient">something great.</span>
+            </h2>
+            <p className="mt-6 text-base md:text-lg text-muted-foreground max-w-md mx-auto">
+              Open to ambitious AI projects, research collaborations, and startup ideas that matter.
+            </p>
+
+            <div className="mt-10 flex flex-wrap items-center justify-center gap-4">
+              <a
+                href="mailto:sravan@example.com"
+                className="group inline-flex items-center gap-2 px-8 py-4 bg-primary text-primary-foreground font-semibold rounded-full text-sm hover:shadow-[0_0_40px_hsl(var(--primary)/0.3)] transition-all"
+              >
+                <Mail className="w-4 h-4" />
+                sravan@example.com
+                <ArrowUpRight className="w-4 h-4 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
+              </a>
+            </div>
+
+            <div className="mt-8 flex items-center justify-center gap-6">
+              {[
+                { icon: Github, href: "https://github.com", label: "GitHub" },
+                { icon: Linkedin, href: "https://linkedin.com", label: "LinkedIn" },
+              ].map((s) => (
+                <a
+                  key={s.label}
+                  href={s.href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="group flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors"
+                >
+                  <s.icon className="w-4 h-4" />
+                  <span>{s.label}</span>
+                  <ArrowUpRight className="w-3 h-3 opacity-0 group-hover:opacity-100 transition-opacity" />
+                </a>
+              ))}
+            </div>
+          </RevealOnScroll>
+        </div>
+      </section>
+
+      {/* ═══════ FOOTER ═══════ */}
+      <footer className="border-t border-border px-6 py-8">
+        <div className="max-w-6xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4">
+          <p className="text-xs text-muted-foreground">
+            © 2025 Sravan Kumar
+          </p>
+          <p className="text-xs text-muted-foreground font-mono">
+            Designed & built with obsessive attention to detail
+          </p>
+        </div>
+      </footer>
     </div>
   );
 };
-
-/* ─── Tiny helper components ─── */
-function SectionLabel({ children }: { children: React.ReactNode }) {
-  return (
-    <h2 className="mb-6 text-sm font-bold uppercase tracking-widest text-foreground lg:sr-only">
-      {children}
-    </h2>
-  );
-}
-
-function Highlight({ children }: { children: React.ReactNode }) {
-  return <span className="text-foreground font-medium">{children}</span>;
-}
 
 export default Index;
