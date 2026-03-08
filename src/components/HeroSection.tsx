@@ -17,7 +17,7 @@ const socials = [
 const HeroSection = () => {
   return (
     <header className="pt-32 pb-20 md:pt-40 md:pb-28" id="home">
-      <div className="container py-20">
+      <div className="container">
         <div className="grid lg:grid-cols-[1fr_1.2fr] gap-16 lg:gap-24 items-start">
           {/* Left — Sticky intro */}
           <div className="lg:sticky lg:top-24">
