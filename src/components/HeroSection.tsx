@@ -1,64 +1,127 @@
-import { ArrowRight, Mail } from "lucide-react";
+import { motion } from "framer-motion";
+import { Github, Linkedin, Mail, ArrowUpRight } from "lucide-react";
+
+const navLinks = [
+  { label: "About", href: "#about" },
+  { label: "Experience", href: "#experience" },
+  { label: "Projects", href: "#projects" },
+  { label: "Contact", href: "#contact" },
+];
+
+const socials = [
+  { icon: Github, href: "https://github.com", label: "GitHub" },
+  { icon: Linkedin, href: "https://linkedin.com", label: "LinkedIn" },
+  { icon: Mail, href: "mailto:sravan@example.com", label: "Email" },
+];
 
 const HeroSection = () => {
   return (
-    <section id="home" className="pt-32 pb-20 md:pt-40 md:pb-28">
-      <div className="container">
-        <div className="grid md:grid-cols-2 gap-12 items-center">
-          <div>
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-border bg-secondary text-sm text-muted-foreground mb-6">
-              <span className="w-2 h-2 rounded-full bg-primary" />
-              Available for opportunities
-            </div>
-            <h1 className="text-4xl md:text-5xl lg:text-6xl font-extrabold text-foreground leading-tight tracking-tight mb-6">
-              AI Product Engineer building real-world AI systems.
-            </h1>
-            <p className="text-lg text-muted-foreground mb-4 max-w-lg leading-relaxed">
-              I research problems, build prototypes quickly, and ship AI-powered products.
-            </p>
-            <p className="text-base text-muted-foreground mb-8 max-w-lg leading-relaxed">
-              Focused on AI engineering, product prototyping, backend systems, and
-              research-driven building — turning ideas into working software fast.
-            </p>
-            <div className="flex flex-wrap gap-3">
-              <a
-                href="#projects"
-                className="inline-flex items-center gap-2 px-6 py-3 bg-primary text-primary-foreground font-semibold rounded-lg hover:opacity-90 transition-opacity text-sm"
-              >
-                View Projects <ArrowRight className="w-4 h-4" />
-              </a>
-              <a
-                href="#contact"
-                className="inline-flex items-center gap-2 px-6 py-3 border border-border bg-secondary text-foreground font-semibold rounded-lg hover:bg-muted transition-colors text-sm"
-              >
-                <Mail className="w-4 h-4" /> Contact Me
-              </a>
-            </div>
+    <header className="min-h-screen flex items-center" id="home">
+      <div className="container py-20">
+        <div className="grid lg:grid-cols-[1fr_1.2fr] gap-16 lg:gap-24 items-start">
+          {/* Left — Sticky intro */}
+          <div className="lg:sticky lg:top-24">
+            <motion.div
+              initial={{ opacity: 0, y: 30 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6 }}
+            >
+              <h1 className="text-5xl md:text-6xl lg:text-7xl font-black text-foreground tracking-tight leading-[1.05] mb-6">
+                Sravan
+                <br />
+                Kumar
+              </h1>
+              <p className="text-xl font-semibold text-primary mb-4">
+                AI Product Engineer & Builder
+              </p>
+              <p className="text-base text-muted-foreground leading-relaxed max-w-md mb-10">
+                I build AI-powered products from zero to one. I research problems, 
+                prototype fast, and ship systems that work in the real world.
+              </p>
+
+              {/* Nav links */}
+              <nav className="hidden lg:flex flex-col gap-3 mb-12">
+                {navLinks.map((link) => (
+                  <a
+                    key={link.href}
+                    href={link.href}
+                    className="group flex items-center gap-3 text-sm text-muted-foreground hover:text-foreground transition-colors duration-200"
+                  >
+                    <span className="h-px w-8 bg-muted-foreground group-hover:w-16 group-hover:bg-foreground transition-all duration-200" />
+                    {link.label}
+                  </a>
+                ))}
+              </nav>
+
+              {/* Socials */}
+              <div className="flex items-center gap-4">
+                {socials.map((s) => (
+                  <a
+                    key={s.label}
+                    href={s.href}
+                    target={s.href.startsWith("mailto") ? undefined : "_blank"}
+                    rel="noopener noreferrer"
+                    className="p-2 text-muted-foreground hover:text-foreground transition-colors duration-200"
+                    aria-label={s.label}
+                  >
+                    <s.icon className="w-5 h-5" />
+                  </a>
+                ))}
+              </div>
+            </motion.div>
           </div>
 
-          {/* Right side — minimal workspace illustration */}
-          <div className="hidden md:flex justify-center">
-            <div className="w-80 h-80 rounded-2xl border border-border bg-secondary p-6 flex flex-col gap-4">
-              <div className="flex gap-2">
-                <span className="w-3 h-3 rounded-full bg-border" />
-                <span className="w-3 h-3 rounded-full bg-border" />
-                <span className="w-3 h-3 rounded-full bg-border" />
+          {/* Right — About / intro content */}
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.2 }}
+            className="space-y-6"
+          >
+            <p className="text-lg text-secondary-foreground leading-relaxed">
+              I'm an <span className="text-foreground font-medium">AI product engineer</span> and{" "}
+              <span className="text-foreground font-medium">startup builder</span> who lives at the 
+              intersection of research and shipping. I don't just write code — I identify real problems, 
+              design solutions, and build working products.
+            </p>
+            <p className="text-lg text-secondary-foreground leading-relaxed">
+              Currently building AI-powered systems at{" "}
+              <a href="#experience" className="text-foreground font-medium border-b border-muted-foreground/30 hover:border-primary transition-colors">
+                Saap Technologies
+              </a>
+              , where I'm working on mental health platforms that use AI to predict and prevent student crises.
+            </p>
+            <p className="text-lg text-secondary-foreground leading-relaxed">
+              My approach: <span className="text-foreground font-medium">research deeply</span>,{" "}
+              <span className="text-foreground font-medium">prototype rapidly</span>,{" "}
+              <span className="text-foreground font-medium">ship relentlessly</span>. Whether it's 
+              an AI chatbot, a risk prediction engine, or a full product launch — I move fast and build things 
+              that create real impact.
+            </p>
+            <p className="text-lg text-secondary-foreground leading-relaxed">
+              When I'm not building, I'm experimenting with new AI tools, exploring startup ideas, and 
+              pushing the boundaries of what's possible with code and machine intelligence.
+            </p>
+
+            {/* Quick stats */}
+            <div className="grid grid-cols-3 gap-6 pt-8 border-t border-border">
+              <div>
+                <p className="text-3xl font-bold text-foreground">3+</p>
+                <p className="text-sm text-muted-foreground mt-1">Products shipped</p>
               </div>
-              <div className="flex-1 rounded-lg bg-muted p-4 font-mono text-xs text-muted-foreground space-y-2 overflow-hidden">
-                <p><span className="text-primary">const</span> engineer = {"{"}</p>
-                <p className="pl-4">name: <span className="text-foreground">"Sravan Kumar"</span>,</p>
-                <p className="pl-4">role: <span className="text-foreground">"AI Product Engineer"</span>,</p>
-                <p className="pl-4">stack: [<span className="text-foreground">"Python"</span>, <span className="text-foreground">"React"</span>, <span className="text-foreground">"AI"</span>],</p>
-                <p className="pl-4">building: <span className="text-primary">true</span>,</p>
-                <p>{"}"};</p>
-                <p className="mt-2"><span className="text-primary">ship</span>(engineer);</p>
-                <p className="text-primary animate-pulse">▊</p>
+              <div>
+                <p className="text-3xl font-bold text-foreground">AI</p>
+                <p className="text-sm text-muted-foreground mt-1">Core focus</p>
+              </div>
+              <div>
+                <p className="text-3xl font-bold text-foreground">0→1</p>
+                <p className="text-sm text-muted-foreground mt-1">Builder mindset</p>
               </div>
             </div>
-          </div>
+          </motion.div>
         </div>
       </div>
-    </section>
+    </header>
   );
 };
 
