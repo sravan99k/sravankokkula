@@ -1,10 +1,10 @@
 import { useState, useEffect } from "react";
+import { Menu, X } from "lucide-react";
 
 const navLinks = [
-  { label: "Home", href: "#home" },
-  { label: "Projects", href: "#projects" },
+  { label: "About", href: "#home" },
   { label: "Experience", href: "#experience" },
-  { label: "Research", href: "#research" },
+  { label: "Projects", href: "#projects" },
   { label: "Contact", href: "#contact" },
 ];
 
@@ -20,15 +20,15 @@ const Navbar = () => {
 
   return (
     <nav
-      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-200 ${
+      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
         scrolled
-          ? "bg-secondary/95 backdrop-blur-sm border-b border-border shadow-sm"
+          ? "bg-background/80 backdrop-blur-md border-b border-border"
           : "bg-transparent"
       }`}
     >
       <div className="container flex items-center justify-between h-16">
-        <a href="#home" className="text-lg font-bold text-foreground tracking-tight">
-          Sravan Kumar
+        <a href="#home" className="text-base font-bold text-foreground tracking-tight font-mono">
+          SK<span className="text-primary">.</span>
         </a>
 
         {/* Desktop */}
@@ -37,7 +37,7 @@ const Navbar = () => {
             <a
               key={link.href}
               href={link.href}
-              className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
+              className="text-sm text-muted-foreground hover:text-foreground transition-colors duration-200"
             >
               {link.label}
             </a>
@@ -50,33 +50,20 @@ const Navbar = () => {
           onClick={() => setMobileOpen(!mobileOpen)}
           aria-label="Toggle menu"
         >
-          <svg width="24" height="24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
-            {mobileOpen ? (
-              <>
-                <line x1="18" y1="6" x2="6" y2="18" />
-                <line x1="6" y1="6" x2="18" y2="18" />
-              </>
-            ) : (
-              <>
-                <line x1="3" y1="6" x2="21" y2="6" />
-                <line x1="3" y1="12" x2="21" y2="12" />
-                <line x1="3" y1="18" x2="21" y2="18" />
-              </>
-            )}
-          </svg>
+          {mobileOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
         </button>
       </div>
 
       {/* Mobile menu */}
       {mobileOpen && (
-        <div className="md:hidden bg-secondary border-b border-border pb-4">
+        <div className="md:hidden bg-background border-b border-border pb-4">
           <div className="container flex flex-col gap-3">
             {navLinks.map((link) => (
               <a
                 key={link.href}
                 href={link.href}
                 onClick={() => setMobileOpen(false)}
-                className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors py-1"
+                className="text-sm text-muted-foreground hover:text-foreground transition-colors py-2"
               >
                 {link.label}
               </a>
