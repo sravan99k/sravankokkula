@@ -1,367 +1,347 @@
+import { useEffect, useRef, useState, useCallback } from "react";
 import { motion } from "framer-motion";
-import { Github, Linkedin, Mail, ArrowUpRight, Terminal, Zap, ExternalLink } from "lucide-react";
+import { Github, Linkedin, Mail, ArrowUpRight, ExternalLink } from "lucide-react";
 
-const techStack = ["Python", "React", "AI/ML", "OpenAI", "Tailwind", "Firebase", "SQL", "NumPy", "Pandas", "Git"];
+/* ─── Data (single source of truth — no repetition) ─── */
+const NAV = ["about", "experience", "projects"] as const;
 
-const fadeUp = {
-  initial: { opacity: 0, y: 24 },
-  animate: { opacity: 1, y: 0 },
-  transition: { duration: 0.5, ease: [0.25, 0.46, 0.45, 0.94] as const },
-};
+const EXPERIENCE = [
+  {
+    period: "2025 — Present",
+    title: "Software Developer",
+    company: "Saap Technologies",
+    companyUrl: "#",
+    desc: "Building Novo Wellness — an AI student mental health platform. Shipped an OpenAI chatbot, risk‑prediction engine, and counselor dashboard in a lean team of three.",
+    tech: ["React", "Tailwind", "OpenAI API", "Python", "Firebase"],
+  },
+  {
+    period: "Dec 2024 — May 2025",
+    title: "Software Developer",
+    company: "Novo Neuro Tech",
+    companyUrl: "#",
+    desc: "Built an AI neurological risk prediction system — doctor uploads a brain scan and gets a disease risk percentage using custom ML models and computer vision.",
+    tech: ["Python", "Machine Learning", "Computer Vision", "React"],
+  },
+  {
+    period: "2024",
+    title: "Web Developer",
+    company: "Lyric Video Makers",
+    companyUrl: "#",
+    desc: "Designed and shipped a production landing page for a video production studio with portfolio showcase, testimonials, and pricing integration.",
+    tech: ["React", "Tailwind", "Firebase"],
+  },
+];
 
-const stagger = (i: number) => ({
-  ...fadeUp,
-  transition: { ...fadeUp.transition, delay: i * 0.08 },
-});
+const PROJECTS = [
+  {
+    title: "Novo Wellness",
+    desc: "Full‑stack AI mental health platform for schools. Students chat with an empathetic AI → system predicts risk scores and alerts counselors in real‑time.",
+    tech: ["React", "OpenAI", "Python", "Firebase"],
+    link: "#",
+    status: "Live",
+    featured: true,
+  },
+  {
+    title: "Neuro Risk Engine",
+    desc: "Upload a brain scan → get a risk percentage for neurological disorders. AI‑powered diagnostic assistant built for doctors.",
+    tech: ["Python", "ML", "Computer Vision"],
+    link: "#",
+    status: "Shipped",
+  },
+  {
+    title: "Lyric Video Makers",
+    desc: "High-converting landing page for a creative video studio with motion graphics showcase and client portal.",
+    tech: ["React", "Tailwind", "Firebase"],
+    link: "#",
+    status: "Live",
+  },
+];
 
+const SOCIALS = [
+  { icon: Github, href: "https://github.com", label: "GitHub" },
+  { icon: Linkedin, href: "https://linkedin.com", label: "LinkedIn" },
+  { icon: Mail, href: "mailto:sravan@example.com", label: "Email" },
+];
+
+/* ─── Cursor Spotlight Hook ─── */
+function useSpotlight() {
+  const ref = useRef<HTMLDivElement>(null);
+  const handleMouseMove = useCallback((e: MouseEvent) => {
+    if (ref.current) {
+      ref.current.style.setProperty("--spotlight-x", `${e.clientX}px`);
+      ref.current.style.setProperty("--spotlight-y", `${e.clientY}px`);
+    }
+  }, []);
+
+  useEffect(() => {
+    window.addEventListener("mousemove", handleMouseMove);
+    return () => window.removeEventListener("mousemove", handleMouseMove);
+  }, [handleMouseMove]);
+
+  return ref;
+}
+
+/* ─── Active Section Hook ─── */
+function useActiveSection() {
+  const [active, setActive] = useState<string>("about");
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            setActive(entry.target.id);
+          }
+        });
+      },
+      { rootMargin: "-40% 0px -40% 0px" }
+    );
+
+    NAV.forEach((id) => {
+      const el = document.getElementById(id);
+      if (el) observer.observe(el);
+    });
+
+    return () => observer.disconnect();
+  }, []);
+
+  return active;
+}
+
+/* ─── Main Component ─── */
 const Index = () => {
+  const spotlightRef = useSpotlight();
+  const activeSection = useActiveSection();
+
   return (
-    <div className="min-h-screen bg-background">
-
-      {/* ===== HERO ===== */}
-      <section className="min-h-[85vh] flex items-center relative overflow-hidden">
-        {/* Decorative grid dots */}
-        <div className="absolute inset-0 opacity-[0.03]" style={{
-          backgroundImage: "radial-gradient(circle, hsl(var(--foreground)) 1px, transparent 1px)",
-          backgroundSize: "32px 32px",
-        }} />
+    <div
+      ref={spotlightRef}
+      className="relative min-h-screen bg-background"
+      style={{
+        backgroundImage: `radial-gradient(600px circle at var(--spotlight-x, 50%) var(--spotlight-y, 50%), hsl(var(--primary) / 0.06), transparent 60%)`,
+      }}
+    >
+      <div className="mx-auto max-w-screen-xl px-6 py-12 md:px-12 md:py-20 lg:px-24 lg:py-0 lg:flex lg:justify-between lg:gap-4">
         
-        <div className="container relative z-10 py-20">
-          <motion.div {...stagger(0)} className="mb-8">
-            <div className="inline-flex items-center gap-2.5 px-4 py-2 rounded-full border border-primary/20 bg-primary/5 text-primary text-sm font-mono">
-              <span className="w-2 h-2 rounded-full bg-primary animate-pulse" />
-              building in public
-            </div>
-          </motion.div>
-
-          <motion.h1
-            {...stagger(1)}
-            className="text-6xl md:text-8xl lg:text-9xl font-bold text-foreground tracking-tighter leading-[0.9] mb-8"
-          >
-            Sravan
-            <br />
-            Kumar<span className="text-primary">.</span>
-          </motion.h1>
-
-          <motion.p
-            {...stagger(2)}
-            className="text-xl md:text-2xl text-muted-foreground max-w-2xl leading-relaxed mb-12"
-          >
-            AI Product Engineer — I research problems, prototype fast, and ship AI systems that actually work.
-          </motion.p>
-
-          <motion.div {...stagger(3)} className="flex items-center gap-6">
-            <a
-              href="mailto:sravan@example.com"
-              className="group inline-flex items-center gap-2 px-7 py-3.5 bg-primary text-primary-foreground font-semibold rounded-full hover:brightness-110 transition-all text-sm"
+        {/* ===== LEFT — Sticky Sidebar ===== */}
+        <header className="lg:sticky lg:top-0 lg:flex lg:max-h-screen lg:w-1/2 lg:flex-col lg:justify-between lg:py-24">
+          <div>
+            <motion.h1
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5 }}
+              className="text-5xl font-bold tracking-tight text-foreground sm:text-6xl"
             >
-              Let's Talk
-              <ArrowUpRight className="w-4 h-4 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
-            </a>
-            <div className="flex items-center gap-1">
-              {[
-                { icon: Github, href: "https://github.com", label: "GitHub" },
-                { icon: Linkedin, href: "https://linkedin.com", label: "LinkedIn" },
-                { icon: Mail, href: "mailto:sravan@example.com", label: "Email" },
-              ].map((s) => (
+              Sravan Kumar<span className="text-gradient">.</span>
+            </motion.h1>
+
+            <motion.h2
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5, delay: 0.1 }}
+              className="mt-3 text-lg font-medium text-muted-foreground"
+            >
+              AI Product Engineer & Startup Builder
+            </motion.h2>
+
+            <motion.p
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5, delay: 0.2 }}
+              className="mt-4 max-w-xs text-sm leading-relaxed text-muted-foreground"
+            >
+              I research hard problems, prototype fast, and ship AI systems that people actually use.
+            </motion.p>
+
+            {/* Nav */}
+            <nav className="hidden lg:block mt-16">
+              <ul className="space-y-1">
+                {NAV.map((id, i) => (
+                  <motion.li
+                    key={id}
+                    initial={{ opacity: 0, x: -12 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ duration: 0.3, delay: 0.3 + i * 0.05 }}
+                  >
+                    <a
+                      href={`#${id}`}
+                      className={`group flex items-center gap-4 py-2 text-xs font-bold uppercase tracking-widest transition-all duration-200 ${
+                        activeSection === id
+                          ? "text-foreground"
+                          : "text-muted-foreground hover:text-foreground"
+                      }`}
+                    >
+                      <span
+                        className={`h-px transition-all duration-200 ${
+                          activeSection === id
+                            ? "w-16 bg-foreground"
+                            : "w-8 bg-muted-foreground group-hover:w-16 group-hover:bg-foreground"
+                        }`}
+                      />
+                      {id}
+                    </a>
+                  </motion.li>
+                ))}
+              </ul>
+            </nav>
+          </div>
+
+          {/* Socials */}
+          <motion.ul
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.5, delay: 0.5 }}
+            className="mt-8 flex items-center gap-5 lg:mt-0"
+          >
+            {SOCIALS.map((s) => (
+              <li key={s.label}>
                 <a
-                  key={s.label}
                   href={s.href}
                   target={s.href.startsWith("mailto") ? undefined : "_blank"}
                   rel="noopener noreferrer"
-                  className="p-3 rounded-full text-muted-foreground hover:text-foreground hover:bg-card transition-all duration-200"
                   aria-label={s.label}
+                  className="block text-muted-foreground hover:text-foreground transition-colors duration-200"
                 >
                   <s.icon className="w-5 h-5" />
                 </a>
-              ))}
-            </div>
-          </motion.div>
-        </div>
-      </section>
+              </li>
+            ))}
+          </motion.ul>
+        </header>
 
-      {/* ===== BENTO SECTION ===== */}
-      <section className="container pb-24">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+        {/* ===== RIGHT — Scrollable Content ===== */}
+        <main className="pt-24 lg:w-1/2 lg:py-24">
           
-          {/* Current Focus */}
-          <motion.div {...stagger(0)} viewport={{ once: true }} whileInView="animate" initial="initial"
-            className="bg-card border border-border rounded-3xl p-8 flex flex-col justify-between min-h-[200px] hover:border-primary/30 transition-colors duration-300"
-          >
-            <Terminal className="w-6 h-6 text-primary" />
-            <div className="mt-auto">
-              <p className="text-xs font-mono text-muted-foreground uppercase tracking-wider mb-2">Now building</p>
-              <p className="text-xl font-semibold text-foreground">AI mental health platform</p>
-              <p className="text-sm text-muted-foreground mt-1">at Saap Technologies</p>
+          {/* About */}
+          <section id="about" className="mb-16 scroll-mt-16 lg:mb-24 lg:scroll-mt-24">
+            <SectionLabel>About</SectionLabel>
+            <div className="space-y-4 text-sm leading-relaxed text-muted-foreground">
+              <p>
+                I'm an AI product engineer who lives at the intersection of{" "}
+                <Highlight>research and shipping</Highlight>. I don't just build features — I dig into the problem space, 
+                prototype ideas in days, and push them to production.
+              </p>
+              <p>
+                Currently at <Highlight>Saap Technologies</Highlight>, I'm building an AI‑powered mental health platform 
+                for schools — from an empathetic chatbot to real‑time risk prediction for counselors. Before that, I built 
+                a neurological risk assessment tool using brain scans and ML at Novo Neuro Tech.
+              </p>
+              <p>
+                I'm not looking for a job — I'm building the future. My toolkit spans{" "}
+                <Highlight>Python, React, OpenAI, ML/CV, and Firebase</Highlight>. I think in systems, 
+                ship in sprints, and believe the best products come from obsessing over problems nobody else notices.
+              </p>
             </div>
-          </motion.div>
+          </section>
 
-          {/* Stats */}
-          <motion.div {...stagger(1)} viewport={{ once: true }} whileInView="animate" initial="initial"
-            className="bg-card border border-border rounded-3xl p-8 hover:border-primary/30 transition-colors duration-300"
-          >
-            <div className="grid grid-cols-3 gap-6 h-full items-center">
-              {[
-                { num: "3+", label: "Products shipped" },
-                { num: "AI", label: "Core focus" },
-                { num: "0→1", label: "Builder" },
-              ].map((s) => (
-                <div key={s.label} className="text-center">
-                  <p className="text-3xl font-bold text-foreground mb-1">{s.num}</p>
-                  <p className="text-xs text-muted-foreground leading-tight">{s.label}</p>
-                </div>
-              ))}
-            </div>
-          </motion.div>
-
-          {/* Approach */}
-          <motion.div {...stagger(2)} viewport={{ once: true }} whileInView="animate" initial="initial"
-            className="bg-card border border-border rounded-3xl p-8 hover:border-primary/30 transition-colors duration-300"
-          >
-            <div className="flex flex-col justify-between h-full">
-              <p className="text-xs font-mono text-muted-foreground uppercase tracking-wider mb-6">My approach</p>
-              <div className="space-y-3">
-                {["Research deeply", "Prototype in days", "Ship relentlessly"].map((step, i) => (
-                  <div key={step} className="flex items-center gap-3">
-                    <span className="w-6 h-6 rounded-full bg-primary/10 text-primary text-xs font-bold flex items-center justify-center flex-shrink-0">
-                      {i + 1}
-                    </span>
-                    <span className="text-foreground font-medium">{step}</span>
+          {/* Experience */}
+          <section id="experience" className="mb-16 scroll-mt-16 lg:mb-24 lg:scroll-mt-24">
+            <SectionLabel>Experience</SectionLabel>
+            <div className="space-y-2">
+              {EXPERIENCE.map((exp, i) => (
+                <motion.a
+                  key={i}
+                  href={exp.companyUrl}
+                  initial={{ opacity: 0, y: 12 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 0.3, delay: i * 0.06 }}
+                  className="group relative grid pb-1 transition-all sm:grid-cols-8 sm:gap-8 md:gap-4 rounded-lg p-4 -mx-4 hover:bg-card/80 hover:shadow-[inset_0_1px_0_0_rgba(148,163,184,0.08)] hover:drop-shadow-lg cursor-pointer"
+                >
+                  <header className="text-xs font-mono uppercase tracking-wide text-muted-foreground sm:col-span-2 mt-1 mb-2 sm:mb-0 whitespace-nowrap">
+                    {exp.period}
+                  </header>
+                  <div className="sm:col-span-6">
+                    <h3 className="font-medium text-foreground group-hover:text-primary transition-colors leading-snug flex items-center gap-1">
+                      {exp.title} · {exp.company}
+                      <ArrowUpRight className="w-3.5 h-3.5 opacity-0 -translate-y-0.5 translate-x-0.5 group-hover:opacity-100 group-hover:translate-y-0 group-hover:translate-x-0 transition-all duration-200 text-primary" />
+                    </h3>
+                    <p className="mt-2 text-sm leading-relaxed text-muted-foreground">{exp.desc}</p>
+                    <ul className="mt-3 flex flex-wrap gap-2">
+                      {exp.tech.map((t) => (
+                        <li key={t}>
+                          <span className="inline-flex items-center rounded-full bg-primary/10 px-3 py-1 text-xs font-medium text-primary">
+                            {t}
+                          </span>
+                        </li>
+                      ))}
+                    </ul>
                   </div>
-                ))}
-              </div>
+                </motion.a>
+              ))}
             </div>
-          </motion.div>
-        </div>
-      </section>
+          </section>
 
-      {/* ===== TECH MARQUEE ===== */}
-      <section className="border-y border-border py-5 overflow-hidden mb-24">
-        <div className="flex animate-marquee whitespace-nowrap">
-          {[...techStack, ...techStack, ...techStack].map((tech, i) => (
-            <span key={i} className="mx-6 text-sm font-mono text-muted-foreground/60 flex items-center gap-2.5">
-              <span className="w-1.5 h-1.5 rounded-full bg-primary/50" />
-              {tech}
-            </span>
-          ))}
-        </div>
-      </section>
-
-      {/* ===== EXPERIENCE ===== */}
-      <section className="container pb-32">
-        <motion.div initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} viewport={{ once: true }}>
-          <h2 className="text-xs font-mono text-primary uppercase tracking-[0.25em] mb-10">Experience</h2>
-        </motion.div>
-
-        <div className="space-y-5">
-          {[
-            {
-              company: "Saap Technologies",
-              role: "Software Developer",
-              period: "2025 — Present",
-              desc: "Building Novo Wellness — an AI-powered student mental health platform. Shipped an OpenAI chatbot, risk prediction engine, and student-facing tools in a lean team.",
-              tech: ["React", "Tailwind", "OpenAI API", "Python"],
-            },
-            {
-              company: "Novo Neuro Tech",
-              role: "Software Developer",
-              period: "Dec 2024 — May 2025",
-              desc: "Built an AI neurological risk prediction system. Doctor uploads a brain scan → system returns disease risk percentage using ML models.",
-              tech: ["Python", "Machine Learning", "React", "Computer Vision"],
-            },
-            {
-              company: "Lyric Video Makers",
-              role: "Web Developer",
-              period: "Freelance",
-              desc: "Designed and shipped a production landing page for a video production studio — featuring testimonials, portfolio, and pricing.",
-              tech: ["React", "Tailwind", "Firebase"],
-            },
-          ].map((exp, i) => (
-            <motion.div
-              key={i}
-              initial={{ opacity: 0, y: 16 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.4, delay: i * 0.08 }}
-              className="group bg-card border border-border rounded-2xl p-7 md:p-8 hover:border-primary/30 transition-all duration-300"
-            >
-              <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-3 mb-4">
-                <div>
-                  <h3 className="text-xl font-semibold text-foreground group-hover:text-primary transition-colors">
-                    {exp.company}
-                  </h3>
-                  <p className="text-primary text-sm font-medium mt-0.5">{exp.role}</p>
-                </div>
-                <span className="text-xs font-mono text-muted-foreground bg-secondary px-3 py-1.5 rounded-full whitespace-nowrap">
-                  {exp.period}
-                </span>
-              </div>
-              <p className="text-muted-foreground leading-relaxed mb-5 max-w-2xl">{exp.desc}</p>
-              <div className="flex flex-wrap gap-2">
-                {exp.tech.map((t) => (
-                  <span key={t} className="text-xs font-medium px-3 py-1.5 rounded-full bg-primary/8 text-primary border border-primary/15">
-                    {t}
-                  </span>
-                ))}
-              </div>
-            </motion.div>
-          ))}
-        </div>
-      </section>
-
-      {/* ===== PROJECTS ===== */}
-      <section className="container pb-32">
-        <motion.div initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} viewport={{ once: true }}>
-          <h2 className="text-xs font-mono text-primary uppercase tracking-[0.25em] mb-3">Projects</h2>
-          <p className="text-muted-foreground text-lg mb-10">Things I've built from scratch.</p>
-        </motion.div>
-
-        <div className="grid md:grid-cols-2 gap-5">
-          {/* Featured project — full width */}
-          <motion.div
-            initial={{ opacity: 0, y: 16 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            className="md:col-span-2 group bg-card border border-border rounded-2xl p-8 md:p-10 hover:border-primary/30 transition-all duration-300 relative"
-          >
-            <div className="flex items-center gap-2 mb-4">
-              <span className="w-2.5 h-2.5 rounded-full bg-primary" />
-              <span className="text-xs font-mono text-primary font-medium">Featured · Live</span>
+          {/* Projects */}
+          <section id="projects" className="mb-16 scroll-mt-16 lg:mb-24 lg:scroll-mt-24">
+            <SectionLabel>Projects</SectionLabel>
+            <div className="space-y-2">
+              {PROJECTS.map((proj, i) => (
+                <motion.a
+                  key={i}
+                  href={proj.link}
+                  initial={{ opacity: 0, y: 12 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 0.3, delay: i * 0.06 }}
+                  className="group relative grid pb-1 transition-all sm:grid-cols-8 sm:gap-8 md:gap-4 rounded-lg p-4 -mx-4 hover:bg-card/80 hover:shadow-[inset_0_1px_0_0_rgba(148,163,184,0.08)] hover:drop-shadow-lg cursor-pointer"
+                >
+                  <div className="sm:col-span-2 mt-1 mb-2 sm:mb-0">
+                    <span className={`inline-flex items-center gap-1.5 text-xs font-mono uppercase tracking-wide ${
+                      proj.status === "Live" ? "text-primary" : "text-muted-foreground"
+                    }`}>
+                      <span className={`w-1.5 h-1.5 rounded-full ${proj.status === "Live" ? "bg-primary animate-pulse" : "bg-muted-foreground"}`} />
+                      {proj.status}
+                    </span>
+                  </div>
+                  <div className="sm:col-span-6">
+                    <h3 className="font-medium text-foreground group-hover:text-primary transition-colors leading-snug flex items-center gap-1">
+                      {proj.title}
+                      {proj.featured && (
+                        <span className="ml-2 text-[10px] font-mono uppercase tracking-wider text-primary bg-primary/10 px-2 py-0.5 rounded">Featured</span>
+                      )}
+                      <ExternalLink className="w-3.5 h-3.5 ml-1 opacity-0 group-hover:opacity-100 transition-opacity duration-200 text-primary" />
+                    </h3>
+                    <p className="mt-2 text-sm leading-relaxed text-muted-foreground">{proj.desc}</p>
+                    <ul className="mt-3 flex flex-wrap gap-2">
+                      {proj.tech.map((t) => (
+                        <li key={t}>
+                          <span className="inline-flex items-center rounded-full bg-primary/10 px-3 py-1 text-xs font-medium text-primary">
+                            {t}
+                          </span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                </motion.a>
+              ))}
             </div>
-            <h3 className="text-3xl md:text-4xl font-bold text-foreground mb-3 group-hover:text-primary transition-colors tracking-tight">
-              Novo Wellness
-            </h3>
-            <p className="text-lg text-muted-foreground leading-relaxed mb-8 max-w-2xl">
-              Full-stack AI mental health platform for schools. Students chat with an empathetic AI chatbot → system predicts risk scores and alerts counselors in real-time.
+          </section>
+
+          {/* Footer */}
+          <footer className="pb-16 text-sm text-muted-foreground max-w-md">
+            <p>
+              Built with <Highlight>React</Highlight>, <Highlight>Tailwind CSS</Highlight>, and <Highlight>Framer Motion</Highlight>. 
+              Inspired by <a href="https://brittanychiang.com" target="_blank" rel="noopener noreferrer" className="text-foreground hover:text-primary transition-colors">Brittany Chiang</a>'s design philosophy.
             </p>
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
-              {["AI Chatbot", "Risk Prediction", "Admin Dashboard", "Real-time Alerts"].map((f) => (
-                <div key={f} className="flex items-center gap-2 text-sm text-secondary-foreground">
-                  <Zap className="w-3.5 h-3.5 text-primary flex-shrink-0" />
-                  {f}
-                </div>
-              ))}
-            </div>
-            <div className="flex flex-wrap gap-2">
-              {["React", "Tailwind", "OpenAI", "Python", "Firebase"].map((t) => (
-                <span key={t} className="text-xs font-medium px-3 py-1.5 rounded-full bg-secondary text-muted-foreground">{t}</span>
-              ))}
-            </div>
-          </motion.div>
-
-          {/* Project 2 */}
-          <motion.div
-            initial={{ opacity: 0, y: 16 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ delay: 0.08 }}
-            className="group bg-card border border-border rounded-2xl p-7 md:p-8 hover:border-primary/30 transition-all duration-300 flex flex-col"
-          >
-            <div className="flex items-center gap-2 mb-4">
-              <span className="w-2 h-2 rounded-full bg-primary" />
-              <span className="text-xs font-mono text-primary">Shipped</span>
-            </div>
-            <h3 className="text-2xl font-bold text-foreground mb-2 group-hover:text-primary transition-colors">
-              Novo Neuro Tech
-            </h3>
-            <p className="text-muted-foreground leading-relaxed mb-6 flex-1">
-              Upload a brain scan → get a risk percentage for neurological disorders. AI-powered diagnostic tool built for doctors.
-            </p>
-            <div className="flex flex-wrap gap-2">
-              {["Python", "ML", "React", "Computer Vision"].map((t) => (
-                <span key={t} className="text-xs font-medium px-3 py-1.5 rounded-full bg-secondary text-muted-foreground">{t}</span>
-              ))}
-            </div>
-          </motion.div>
-
-          {/* Project 3 */}
-          <motion.div
-            initial={{ opacity: 0, y: 16 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ delay: 0.16 }}
-            className="group bg-card border border-border rounded-2xl p-7 md:p-8 hover:border-primary/30 transition-all duration-300 flex flex-col"
-          >
-            <div className="flex items-center gap-2 mb-4">
-              <span className="w-2 h-2 rounded-full bg-primary" />
-              <span className="text-xs font-mono text-primary">Live</span>
-            </div>
-            <h3 className="text-2xl font-bold text-foreground mb-2 group-hover:text-primary transition-colors">
-              Lyric Video Makers
-            </h3>
-            <p className="text-muted-foreground leading-relaxed mb-6 flex-1">
-              High-converting landing page for a creative video production studio with testimonials, portfolio, and pricing.
-            </p>
-            <div className="flex flex-wrap gap-2">
-              {["React", "Tailwind", "Firebase"].map((t) => (
-                <span key={t} className="text-xs font-medium px-3 py-1.5 rounded-full bg-secondary text-muted-foreground">{t}</span>
-              ))}
-            </div>
-          </motion.div>
-        </div>
-      </section>
-
-      {/* ===== CTA ===== */}
-      <section className="container pb-24">
-        <motion.div
-          initial={{ opacity: 0, y: 16 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          className="bg-card border border-border rounded-3xl p-10 md:p-16 text-center relative overflow-hidden"
-        >
-          {/* Decorative */}
-          <div className="absolute top-0 left-1/2 -translate-x-1/2 w-40 h-40 bg-primary/5 rounded-full blur-[100px]" />
-          
-          <h2 className="text-4xl md:text-5xl font-bold text-foreground mb-4 tracking-tight relative">
-            Let's build something<span className="text-primary">.</span>
-          </h2>
-          <p className="text-lg text-muted-foreground mb-10 max-w-lg mx-auto">
-            Open to AI products, research experiments, and ambitious ideas.
-          </p>
-          <div className="flex flex-wrap justify-center gap-4">
-            <a
-              href="mailto:sravan@example.com"
-              className="group inline-flex items-center gap-2 px-8 py-4 bg-primary text-primary-foreground font-semibold rounded-full hover:brightness-110 transition-all text-sm"
-            >
-              <Mail className="w-4 h-4" />
-              Say Hello
-              <ArrowUpRight className="w-4 h-4 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
-            </a>
-            <a
-              href="https://github.com"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center gap-2 px-8 py-4 border border-border text-foreground font-semibold rounded-full hover:bg-secondary transition-all text-sm"
-            >
-              <Github className="w-4 h-4" />
-              GitHub
-            </a>
-            <a
-              href="https://linkedin.com"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center gap-2 px-8 py-4 border border-border text-foreground font-semibold rounded-full hover:bg-secondary transition-all text-sm"
-            >
-              <Linkedin className="w-4 h-4" />
-              LinkedIn
-            </a>
-          </div>
-        </motion.div>
-      </section>
-
-      {/* ===== FOOTER ===== */}
-      <footer className="container pb-10">
-        <div className="flex flex-col md:flex-row items-center justify-between gap-4 pt-8 border-t border-border">
-          <p className="text-sm text-muted-foreground">
-            © 2025 <span className="text-foreground font-medium">Sravan Kumar</span>
-          </p>
-          <p className="text-xs font-mono text-muted-foreground">
-            Designed & coded with care
-          </p>
-        </div>
-      </footer>
+          </footer>
+        </main>
+      </div>
     </div>
   );
 };
+
+/* ─── Tiny helper components ─── */
+function SectionLabel({ children }: { children: React.ReactNode }) {
+  return (
+    <h2 className="mb-6 text-sm font-bold uppercase tracking-widest text-foreground lg:sr-only">
+      {children}
+    </h2>
+  );
+}
+
+function Highlight({ children }: { children: React.ReactNode }) {
+  return <span className="text-foreground font-medium">{children}</span>;
+}
 
 export default Index;
