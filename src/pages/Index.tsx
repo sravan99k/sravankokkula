@@ -1,401 +1,330 @@
-import { useEffect, useRef, useCallback, useState } from "react";
-import { motion, useScroll, useTransform, useSpring, useInView } from "framer-motion";
-import { Github, Linkedin, Mail, ArrowUpRight, ArrowDown } from "lucide-react";
+import { ArrowRight, Github, Linkedin, Mail } from "lucide-react";
+import portrait from "@/assets/sravan-portrait.jpg";
+import { FadeIn } from "@/components/portfolio/FadeIn";
+import { SectionTitle } from "@/components/portfolio/SectionTitle";
+import {
+  capabilityGroups,
+  featuredPlatform,
+  heroStats,
+  links,
+  navigation,
+  profile,
+  storyBlocks,
+  timeline,
+  ventures,
+} from "@/data/portfolio";
 
-/* ─────────────────── Data ─────────────────── */
-const PROJECTS = [
-  {
-    title: "Novo Wellness",
-    tagline: "AI mental health for schools",
-    desc: "Students chat with an empathetic AI chatbot. The system predicts risk scores in real-time and alerts school counselors before it's too late.",
-    tech: ["React", "OpenAI", "Python", "Firebase"],
-    gradient: "from-emerald-500/20 via-teal-500/10 to-transparent",
-    status: "Live",
-    role: "Full-Stack · AI Engineer",
-  },
-  {
-    title: "Neuro Risk Engine",
-    tagline: "Brain scan → disease probability",
-    desc: "Doctor uploads a brain scan. ML model returns a risk percentage for neurological disorders. Built for speed and accuracy in clinical settings.",
-    tech: ["Python", "ML", "Computer Vision", "React"],
-    gradient: "from-blue-500/20 via-indigo-500/10 to-transparent",
-    status: "Shipped",
-    role: "ML Engineer",
-  },
-  {
-    title: "Lyric Video Makers",
-    tagline: "Creative studio landing page",
-    desc: "High-converting production website with motion graphics showcase, client testimonials, and an integrated booking system.",
-    tech: ["React", "Tailwind", "Firebase"],
-    gradient: "from-orange-500/20 via-rose-500/10 to-transparent",
-    status: "Live",
-    role: "Web Developer",
-  },
+const contactLinks = [
+  { label: "Email", href: `mailto:${profile.email}`, icon: Mail },
+  { label: "LinkedIn", href: links.linkedin, icon: Linkedin },
+  { label: "GitHub", href: links.github, icon: Github },
 ];
 
-const TIMELINE = [
-  { year: "2025", label: "Saap Technologies", desc: "Building Novo Wellness — AI mental health platform" },
-  { year: "2024", label: "Novo Neuro Tech", desc: "AI neurological risk prediction system" },
-  { year: "2024", label: "Freelance", desc: "Shipped production websites for creative studios" },
-];
-
-const STACK = ["Python", "React", "TypeScript", "OpenAI", "Tailwind", "Firebase", "SQL", "NumPy", "Pandas", "Git", "ML", "Computer Vision", "Framer Motion", "Figma"];
-
-/* ─────────────────── Hooks ─────────────────── */
-function useMousePosition() {
-  const [pos, setPos] = useState({ x: 0, y: 0 });
-  useEffect(() => {
-    const handler = (e: MouseEvent) => setPos({ x: e.clientX, y: e.clientY });
-    window.addEventListener("mousemove", handler);
-    return () => window.removeEventListener("mousemove", handler);
-  }, []);
-  return pos;
-}
-
-/* ─────────────────── Animated Text ─────────────────── */
-function AnimatedWords({ text, className = "", delay = 0 }: { text: string; className?: string; delay?: number }) {
-  const words = text.split(" ");
-  return (
-    <span className={className}>
-      {words.map((word, i) => (
-        <span key={i} className="inline-block overflow-hidden mr-[0.3em]">
-          <motion.span
-            className="inline-block"
-            initial={{ y: "100%", opacity: 0 }}
-            animate={{ y: 0, opacity: 1 }}
-            transition={{ duration: 0.6, delay: delay + i * 0.04, ease: [0.25, 0.46, 0.45, 0.94] }}
-          >
-            {word}
-          </motion.span>
-        </span>
-      ))}
-    </span>
-  );
-}
-
-/* ─────────────────── Section Reveal ─────────────────── */
-function RevealOnScroll({ children, className = "" }: { children: React.ReactNode; className?: string }) {
-  const ref = useRef(null);
-  const isInView = useInView(ref, { once: true, margin: "-100px" });
-  return (
-    <div ref={ref} className={className}>
-      <motion.div
-        initial={{ opacity: 0, y: 60 }}
-        animate={isInView ? { opacity: 1, y: 0 } : {}}
-        transition={{ duration: 0.7, ease: [0.25, 0.46, 0.45, 0.94] }}
-      >
-        {children}
-      </motion.div>
-    </div>
-  );
-}
-
-/* ─────────────────── Main Page ─────────────────── */
 const Index = () => {
-  const mouse = useMousePosition();
-  const { scrollYProgress } = useScroll();
-  const smoothProgress = useSpring(scrollYProgress, { stiffness: 100, damping: 30 });
-  const heroOpacity = useTransform(scrollYProgress, [0, 0.15], [1, 0]);
-  const heroScale = useTransform(scrollYProgress, [0, 0.15], [1, 0.95]);
-
   return (
-    <div className="noise relative">
-      {/* Progress bar */}
-      <motion.div
-        className="fixed top-0 left-0 right-0 h-[2px] bg-primary z-50 origin-left"
-        style={{ scaleX: smoothProgress }}
-      />
-
-      {/* Cursor glow */}
-      <div
-        className="fixed pointer-events-none z-40 w-[500px] h-[500px] rounded-full opacity-[0.07] transition-all duration-300 ease-out"
-        style={{
-          left: mouse.x - 250,
-          top: mouse.y - 250,
-          background: `radial-gradient(circle, hsl(var(--primary)), transparent 70%)`,
-        }}
-      />
-
-      {/* ═══════ HERO ═══════ */}
-      <motion.section
-        style={{ opacity: heroOpacity, scale: heroScale }}
-        className="h-screen flex flex-col justify-center items-center relative overflow-hidden px-6"
-      >
-        {/* Background orbs */}
-        <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-primary/5 rounded-full blur-[120px]" />
-        <div className="absolute bottom-1/4 right-1/4 w-72 h-72 bg-primary/3 rounded-full blur-[100px]" />
-
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ duration: 0.3 }}
-          className="text-center"
-        >
-          {/* Eyebrow */}
-          <motion.div
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.2, duration: 0.5 }}
-            className="mb-8"
-          >
-            <span className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-primary/20 text-primary text-xs font-mono tracking-wider uppercase">
-              <span className="w-1.5 h-1.5 rounded-full bg-primary animate-pulse" />
-              Available for projects
-            </span>
-          </motion.div>
-
-          {/* Giant name */}
-          <h1 className="font-display font-black text-foreground leading-[0.85] tracking-[-0.04em]">
-            <AnimatedWords
-              text="Sravan"
-              className="block text-[clamp(3.5rem,12vw,10rem)]"
-              delay={0.3}
-            />
-            <AnimatedWords
-              text="Kumar."
-              className="block text-[clamp(3.5rem,12vw,10rem)] text-gradient"
-              delay={0.5}
-            />
-          </h1>
-
-          {/* Subtitle */}
-          <motion.p
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.9, duration: 0.6 }}
-            className="mt-8 text-lg md:text-xl text-muted-foreground max-w-lg mx-auto leading-relaxed"
-          >
-            I build AI systems that solve real problems.
-            <br />
-            <span className="text-foreground font-medium">Engineer. Builder. Startup founder.</span>
-          </motion.p>
-
-          {/* CTA */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 1.1, duration: 0.5 }}
-            className="mt-10 flex items-center justify-center gap-4"
-          >
-            <a
-              href="mailto:sravan@example.com"
-              className="group relative inline-flex items-center gap-2 px-7 py-3.5 bg-primary text-primary-foreground font-semibold rounded-full text-sm overflow-hidden transition-all hover:shadow-[0_0_30px_hsl(var(--primary)/0.3)]"
-            >
-              <span className="relative z-10 flex items-center gap-2">
-                Get in touch
-                <ArrowUpRight className="w-4 h-4 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
-              </span>
-            </a>
-            <a
-              href="#work"
-              className="inline-flex items-center gap-2 px-7 py-3.5 border border-border text-foreground/80 font-medium rounded-full text-sm hover:bg-card hover:text-foreground transition-all"
-            >
-              See my work
-            </a>
-          </motion.div>
-        </motion.div>
-
-        {/* Scroll indicator */}
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 1.5, duration: 0.5 }}
-          className="absolute bottom-10 left-1/2 -translate-x-1/2"
-        >
-          <motion.div
-            animate={{ y: [0, 8, 0] }}
-            transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
-          >
-            <ArrowDown className="w-5 h-5 text-muted-foreground" />
-          </motion.div>
-        </motion.div>
-      </motion.section>
-
-      {/* ═══════ STORY INTRO ═══════ */}
-      <section className="relative py-32 md:py-40 px-6">
-        <div className="max-w-3xl mx-auto">
-          <RevealOnScroll>
-            <p className="text-2xl md:text-4xl lg:text-5xl font-display font-bold text-foreground leading-[1.2] tracking-tight">
-              I don't just write code —{" "}
-              <span className="text-gradient">I find problems worth solving</span>,
-              prototype obsessively, and ship products that people actually depend on.
+    <div className="min-h-screen bg-background text-foreground">
+      <header className="sticky top-0 z-40 border-b border-border/80 bg-background/95 backdrop-blur">
+        <div className="shell flex h-20 items-center justify-between gap-6">
+          <a href="#top" className="min-w-0">
+            <p className="truncate font-display text-lg font-semibold tracking-[-0.03em]">{profile.shortName}</p>
+            <p className="truncate font-mono text-[0.68rem] uppercase tracking-[0.28em] text-muted-foreground">
+              AI systems · ventures · product
             </p>
-          </RevealOnScroll>
-          <RevealOnScroll className="mt-10">
-            <p className="text-base md:text-lg text-muted-foreground leading-relaxed max-w-2xl">
-              Currently engineering AI systems at Saap Technologies, where I'm building 
-              a mental health platform that serves real students in real schools. 
-              Previously built ML-powered diagnostic tools for neurologists.
-            </p>
-          </RevealOnScroll>
-        </div>
-      </section>
+          </a>
 
-      {/* ═══════ PROJECTS ═══════ */}
-      <section id="work" className="relative py-20 md:py-32 px-6">
-        <div className="max-w-6xl mx-auto">
-          <RevealOnScroll>
-            <div className="flex items-center gap-4 mb-16">
-              <span className="text-xs font-mono text-primary uppercase tracking-[0.3em]">Selected work</span>
-              <div className="flex-1 h-px bg-border" />
-              <span className="text-xs font-mono text-muted-foreground">{PROJECTS.length} projects</span>
-            </div>
-          </RevealOnScroll>
-
-          <div className="space-y-8">
-            {PROJECTS.map((project, i) => (
-              <RevealOnScroll key={i}>
-                <div className={`group relative rounded-2xl border border-border bg-card overflow-hidden transition-all duration-500 hover:border-primary/30 hover:shadow-[0_0_60px_-15px_hsl(var(--primary)/0.15)]`}>
-                  {/* Gradient overlay */}
-                  <div className={`absolute inset-0 bg-gradient-to-br ${project.gradient} opacity-0 group-hover:opacity-100 transition-opacity duration-700`} />
-                  
-                  <div className="relative p-8 md:p-12">
-                    <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-6">
-                      <div className="flex-1">
-                        {/* Status + Role */}
-                        <div className="flex items-center gap-3 mb-4">
-                          <span className={`inline-flex items-center gap-1.5 text-xs font-mono uppercase tracking-wider ${project.status === "Live" ? "text-primary" : "text-muted-foreground"}`}>
-                            <span className={`w-1.5 h-1.5 rounded-full ${project.status === "Live" ? "bg-primary animate-pulse" : "bg-muted-foreground"}`} />
-                            {project.status}
-                          </span>
-                          <span className="text-xs text-muted-foreground">·</span>
-                          <span className="text-xs text-muted-foreground font-mono">{project.role}</span>
-                        </div>
-
-                        {/* Title */}
-                        <h3 className="text-3xl md:text-4xl font-display font-bold text-foreground group-hover:text-primary transition-colors duration-300 tracking-tight">
-                          {project.title}
-                        </h3>
-                        <p className="mt-1 text-sm text-muted-foreground font-medium">{project.tagline}</p>
-
-                        {/* Description */}
-                        <p className="mt-4 text-muted-foreground leading-relaxed max-w-xl text-sm md:text-base">
-                          {project.desc}
-                        </p>
-
-                        {/* Tech */}
-                        <div className="mt-6 flex flex-wrap gap-2">
-                          {project.tech.map((t) => (
-                            <span key={t} className="text-xs font-medium px-3 py-1 rounded-full bg-primary/10 text-primary border border-primary/10">
-                              {t}
-                            </span>
-                          ))}
-                        </div>
-                      </div>
-
-                      {/* Project number */}
-                      <span className="hidden md:block text-8xl font-display font-black text-foreground/[0.03] group-hover:text-primary/[0.08] transition-colors duration-500 leading-none">
-                        0{i + 1}
-                      </span>
-                    </div>
-                  </div>
-                </div>
-              </RevealOnScroll>
+          <nav className="hidden items-center gap-6 md:flex">
+            {navigation.map((item) => (
+              <a key={item.href} href={item.href} className="text-sm text-muted-foreground transition-colors hover:text-foreground">
+                {item.label}
+              </a>
             ))}
-          </div>
-        </div>
-      </section>
+          </nav>
 
-      {/* ═══════ JOURNEY TIMELINE ═══════ */}
-      <section className="relative py-20 md:py-32 px-6">
-        <div className="max-w-4xl mx-auto">
-          <RevealOnScroll>
-            <div className="flex items-center gap-4 mb-16">
-              <span className="text-xs font-mono text-primary uppercase tracking-[0.3em]">Journey</span>
-              <div className="flex-1 h-px bg-border" />
+          <a href={links.novo} target="_blank" rel="noopener noreferrer" className="button-dark whitespace-nowrap">
+            See live product
+            <ArrowRight className="h-4 w-4" />
+          </a>
+        </div>
+      </header>
+
+      <main id="top">
+        <section className="shell grid gap-12 pb-18 pt-12 lg:min-h-[calc(100vh-5rem)] lg:grid-cols-[1.15fr_0.85fr] lg:items-center">
+          <FadeIn className="space-y-8">
+            <span className="eyebrow">Founder-minded builder</span>
+
+            <div className="space-y-6">
+              <p className="font-mono text-xs uppercase tracking-[0.28em] text-muted-foreground">{profile.location}</p>
+              <h1 className="max-w-4xl font-display text-[clamp(3.8rem,9vw,7.8rem)] leading-[0.92] tracking-[-0.06em]">
+                I turn complex human problems into AI products people trust.
+              </h1>
+              <p className="max-w-2xl text-lg leading-8 text-muted-foreground md:text-xl">
+                {profile.intro}
+              </p>
             </div>
-          </RevealOnScroll>
 
-          <div className="relative">
-            {/* Vertical line */}
-            <div className="absolute left-[18px] top-2 bottom-2 w-px bg-border md:left-1/2 md:-translate-x-px" />
-
-            {TIMELINE.map((item, i) => (
-              <RevealOnScroll key={i}>
-                <div className={`relative flex items-start gap-8 mb-12 last:mb-0 ${i % 2 === 0 ? "md:flex-row" : "md:flex-row-reverse"}`}>
-                  {/* Dot */}
-                  <div className="absolute left-[14px] md:left-1/2 md:-translate-x-1/2 w-[10px] h-[10px] rounded-full bg-primary border-2 border-background z-10 mt-1.5" />
-                  
-                  {/* Content */}
-                  <div className={`ml-12 md:ml-0 md:w-[45%] ${i % 2 === 0 ? "md:text-right md:pr-12" : "md:text-left md:pl-12"}`}>
-                    <span className="text-xs font-mono text-primary tracking-wider">{item.year}</span>
-                    <h4 className="text-xl font-display font-bold text-foreground mt-1">{item.label}</h4>
-                    <p className="text-sm text-muted-foreground mt-1">{item.desc}</p>
-                  </div>
-                </div>
-              </RevealOnScroll>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* ═══════ TECH MARQUEE ═══════ */}
-      <section className="relative py-16 border-y border-border overflow-hidden">
-        <div className="flex animate-scroll-left whitespace-nowrap">
-          {[...STACK, ...STACK, ...STACK].map((tech, i) => (
-            <span key={i} className="mx-8 text-2xl md:text-4xl font-display font-bold text-foreground/[0.06] hover:text-primary/20 transition-colors duration-300 cursor-default select-none">
-              {tech}
-            </span>
-          ))}
-        </div>
-      </section>
-
-      {/* ═══════ CONTACT ═══════ */}
-      <section className="relative py-32 md:py-40 px-6">
-        <div className="max-w-3xl mx-auto text-center">
-          <RevealOnScroll>
-            <span className="text-xs font-mono text-primary uppercase tracking-[0.3em] mb-8 block">What's next?</span>
-            <h2 className="text-4xl md:text-6xl lg:text-7xl font-display font-black text-foreground tracking-tight leading-[0.9]">
-              Let's build
-              <br />
-              <span className="text-gradient">something great.</span>
-            </h2>
-            <p className="mt-6 text-base md:text-lg text-muted-foreground max-w-md mx-auto">
-              Open to ambitious AI projects, research collaborations, and startup ideas that matter.
-            </p>
-
-            <div className="mt-10 flex flex-wrap items-center justify-center gap-4">
-              <a
-                href="mailto:sravan@example.com"
-                className="group inline-flex items-center gap-2 px-8 py-4 bg-primary text-primary-foreground font-semibold rounded-full text-sm hover:shadow-[0_0_40px_hsl(var(--primary)/0.3)] transition-all"
-              >
-                <Mail className="w-4 h-4" />
-                sravan@example.com
-                <ArrowUpRight className="w-4 h-4 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
+            <div className="flex flex-wrap gap-3">
+              <a href="#story" className="button-dark">
+                Read the story
+                <ArrowRight className="h-4 w-4" />
+              </a>
+              <a href={`mailto:${profile.email}`} className="button-light">
+                Write to me
               </a>
             </div>
 
-            <div className="mt-8 flex items-center justify-center gap-6">
-              {[
-                { icon: Github, href: "https://github.com", label: "GitHub" },
-                { icon: Linkedin, href: "https://linkedin.com", label: "LinkedIn" },
-              ].map((s) => (
-                <a
-                  key={s.label}
-                  href={s.href}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="group flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors"
-                >
-                  <s.icon className="w-4 h-4" />
-                  <span>{s.label}</span>
-                  <ArrowUpRight className="w-3 h-3 opacity-0 group-hover:opacity-100 transition-opacity" />
-                </a>
+            <div className="grid gap-4 sm:grid-cols-3">
+              {heroStats.map((stat) => (
+                <div key={stat.label} className="panel p-5">
+                  <p className="font-display text-3xl font-semibold tracking-[-0.04em]">{stat.value}</p>
+                  <p className="mt-2 text-sm leading-6 text-muted-foreground">{stat.label}</p>
+                </div>
               ))}
             </div>
-          </RevealOnScroll>
-        </div>
-      </section>
+          </FadeIn>
 
-      {/* ═══════ FOOTER ═══════ */}
-      <footer className="border-t border-border px-6 py-8">
-        <div className="max-w-6xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4">
-          <p className="text-xs text-muted-foreground">
-            © 2025 Sravan Kumar
-          </p>
-          <p className="text-xs text-muted-foreground font-mono">
-            Designed & built with obsessive attention to detail
-          </p>
+          <FadeIn delay={0.08} className="lg:pl-4">
+            <div className="panel-dark p-5 md:p-6">
+              <img
+                src={portrait}
+                alt="Professional portrait of Sravan Kumar Kokkula"
+                className="aspect-[4/5] w-full rounded-[26px] object-cover"
+                width={1152}
+                height={1536}
+                loading="eager"
+              />
+
+              <div className="mt-5 grid gap-4 md:grid-cols-[1fr_auto] md:items-end">
+                <div>
+                  <p className="font-mono text-xs uppercase tracking-[0.28em] text-background/60">{profile.name}</p>
+                  <p className="mt-3 text-2xl font-semibold tracking-[-0.03em] md:text-[1.9rem]">
+                    Product engineer depth with startup operator energy.
+                  </p>
+                  <p className="mt-3 text-sm leading-7 text-background/72 md:text-base">
+                    Built for high-trust products across wellbeing, communication, and healthcare — from research frameworks to system architecture to launch.
+                  </p>
+                </div>
+
+                <div className="rounded-[22px] border border-background/10 bg-background/5 px-4 py-4 text-sm">
+                  <p className="font-mono text-[0.68rem] uppercase tracking-[0.28em] text-background/60">Now building</p>
+                  <p className="mt-2 font-semibold">Novo Wellness</p>
+                </div>
+              </div>
+            </div>
+          </FadeIn>
+        </section>
+
+        <section id="story" className="bg-foreground py-24 text-background">
+          <div className="shell">
+            <FadeIn>
+              <SectionTitle
+                index="01"
+                kicker="Story"
+                title="Not a portfolio of experiments — a record of products built close to real users."
+                body="My work starts with difficult human contexts and turns them into systems that can actually be deployed, trusted, and improved over time."
+                invert
+              />
+            </FadeIn>
+
+            <div className="mt-14 grid gap-6 lg:grid-cols-3">
+              {storyBlocks.map((block, index) => (
+                <FadeIn key={block.title} delay={index * 0.05}>
+                  <article className="h-full rounded-[30px] border border-background/10 bg-background/5 p-7">
+                    <p className="font-mono text-xs uppercase tracking-[0.28em] text-background/50">Chapter 0{index + 1}</p>
+                    <h3 className="mt-6 font-display text-2xl tracking-[-0.04em]">{block.title}</h3>
+                    <p className="mt-4 text-sm leading-7 text-background/72 md:text-base">{block.description}</p>
+                  </article>
+                </FadeIn>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        <section id="platform" className="shell py-24">
+          <FadeIn>
+            <SectionTitle
+              index="02"
+              kicker="Platform"
+              title="One serious product, owned across research, architecture, AI, and rollout."
+              body="Novo Wellness is the clearest expression of how I like to build: deep domain grounding, careful system design, and shipping velocity without losing trust."
+            />
+          </FadeIn>
+
+          <FadeIn delay={0.06} className="mt-14">
+            <article className="panel overflow-hidden">
+              <div className="grid gap-10 p-8 lg:grid-cols-[1.15fr_0.85fr] lg:p-12">
+                <div>
+                  <p className="font-mono text-xs uppercase tracking-[0.28em] text-muted-foreground">{featuredPlatform.eyebrow}</p>
+                  <h3 className="mt-4 font-display text-4xl tracking-[-0.05em] md:text-5xl">{featuredPlatform.title}</h3>
+                  <p className="mt-4 text-xl leading-8 text-foreground/80">{featuredPlatform.subtitle}</p>
+                  <p className="mt-6 max-w-2xl text-base leading-8 text-muted-foreground">{featuredPlatform.summary}</p>
+
+                  <div className="mt-8 flex flex-wrap gap-2">
+                    {featuredPlatform.stack.map((item) => (
+                      <span key={item} className="rounded-full border border-border bg-background px-4 py-2 text-sm text-muted-foreground">
+                        {item}
+                      </span>
+                    ))}
+                  </div>
+
+                  <a
+                    href={featuredPlatform.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="button-dark mt-8"
+                  >
+                    Visit Novo Wellness
+                    <ArrowRight className="h-4 w-4" />
+                  </a>
+                </div>
+
+                <div className="space-y-6 rounded-[28px] bg-muted p-6 md:p-7">
+                  <div className="grid gap-4 sm:grid-cols-2">
+                    {featuredPlatform.metrics.map((metric) => (
+                      <div key={metric.label} className="rounded-[22px] border border-border bg-card p-4">
+                        <p className="text-sm text-muted-foreground">{metric.label}</p>
+                        <p className="mt-2 font-display text-2xl tracking-[-0.04em]">{metric.value}</p>
+                      </div>
+                    ))}
+                  </div>
+
+                  <div className="rounded-[24px] border border-border bg-card p-5">
+                    <p className="font-mono text-xs uppercase tracking-[0.28em] text-muted-foreground">What I owned</p>
+                    <ul className="mt-4 space-y-4 text-sm leading-7 text-muted-foreground md:text-base">
+                      {featuredPlatform.highlights.map((item) => (
+                        <li key={item} className="flex gap-3">
+                          <span className="mt-2 h-2 w-2 shrink-0 rounded-full bg-foreground" />
+                          <span>{item}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                </div>
+              </div>
+            </article>
+          </FadeIn>
+        </section>
+
+        <section id="ventures" className="shell py-24">
+          <FadeIn>
+            <SectionTitle
+              index="03"
+              kicker="Ventures"
+              title="A broader pattern: products around confidence, cognition, and human decision-making."
+              body="I’m interested in products where AI can genuinely change behaviour, access, or outcomes — not just automate a workflow."
+            />
+          </FadeIn>
+
+          <div className="mt-14 grid gap-6 lg:grid-cols-2">
+            {ventures.map((venture, index) => (
+              <FadeIn key={venture.name} delay={index * 0.05}>
+                <article className="panel h-full p-7 md:p-8">
+                  <div className="flex items-center justify-between gap-4">
+                    <h3 className="font-display text-3xl tracking-[-0.04em]">{venture.name}</h3>
+                    <span className="rounded-full border border-border bg-background px-3 py-1.5 text-xs font-mono uppercase tracking-[0.2em] text-muted-foreground">
+                      {venture.stage}
+                    </span>
+                  </div>
+                  <p className="mt-5 text-base leading-8 text-muted-foreground">{venture.description}</p>
+                  <p className="mt-5 text-sm leading-7 text-foreground/78">{venture.detail}</p>
+                  {venture.link ? (
+                    <a href={venture.link} target="_blank" rel="noopener noreferrer" className="button-light mt-8">
+                      View project
+                      <ArrowRight className="h-4 w-4" />
+                    </a>
+                  ) : null}
+                </article>
+              </FadeIn>
+            ))}
+          </div>
+        </section>
+
+        <section id="craft" className="shell py-24">
+          <div className="grid gap-6 xl:grid-cols-[1.05fr_0.95fr]">
+            <FadeIn className="panel p-8 md:p-10">
+              <SectionTitle
+                index="04"
+                kicker="Craft"
+                title="What sits underneath the work."
+                body="My edge is the mix: product sense, applied AI, backend ownership, and the willingness to carry a problem across disciplines until it becomes a real product."
+              />
+
+              <div className="mt-10 grid gap-5 sm:grid-cols-2">
+                {capabilityGroups.map((group) => (
+                  <div key={group.title} className="rounded-[24px] border border-border bg-background p-5">
+                    <h3 className="font-display text-2xl tracking-[-0.04em]">{group.title}</h3>
+                    <ul className="mt-4 space-y-3 text-sm leading-7 text-muted-foreground md:text-base">
+                      {group.items.map((item) => (
+                        <li key={item} className="flex gap-3">
+                          <span className="mt-2 h-2 w-2 shrink-0 rounded-full bg-foreground" />
+                          <span>{item}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                ))}
+              </div>
+            </FadeIn>
+
+            <FadeIn delay={0.06} className="panel-dark p-8 md:p-10">
+              <p className="font-mono text-xs uppercase tracking-[0.28em] text-background/60">Timeline</p>
+              <h2 className="mt-4 max-w-xl font-display text-4xl tracking-[-0.05em] md:text-5xl">
+                Built through real products, not mock case studies.
+              </h2>
+
+              <div className="mt-10 space-y-6">
+                {timeline.map((item, index) => (
+                  <div
+                    key={item.title}
+                    className={`rounded-[26px] border border-background/10 p-5 ${index === 0 ? "bg-background/8" : "bg-transparent"}`}
+                  >
+                    <p className="font-mono text-xs uppercase tracking-[0.28em] text-background/55">{item.year}</p>
+                    <h3 className="mt-3 text-2xl font-semibold tracking-[-0.03em]">{item.title}</h3>
+                    <p className="mt-3 text-sm leading-7 text-background/72 md:text-base">{item.body}</p>
+                  </div>
+                ))}
+              </div>
+            </FadeIn>
+          </div>
+        </section>
+
+        <section id="connect" className="shell pb-24 pt-6">
+          <FadeIn>
+            <div className="panel-dark px-8 py-10 text-center md:px-12 md:py-14">
+              <p className="font-mono text-xs uppercase tracking-[0.28em] text-background/60">05 / Connect</p>
+              <h2 className="mx-auto mt-4 max-w-4xl font-display text-4xl leading-[0.95] tracking-[-0.05em] md:text-6xl">
+                If you’re building something hard in AI, health, learning, or human communication, I’m interested in the real version of the problem.
+              </h2>
+              <p className="mx-auto mt-5 max-w-2xl text-base leading-8 text-background/72 md:text-lg">
+                Not chasing titles. Just drawn to ambitious products, thoughtful people, and problems worth carrying all the way to production.
+              </p>
+
+              <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
+                {contactLinks.map((link) => {
+                  const Icon = link.icon;
+                  const external = !link.href.startsWith("mailto:");
+
+                  return (
+                    <a
+                      key={link.label}
+                      href={link.href}
+                      {...(external ? { target: "_blank", rel: "noopener noreferrer" } : {})}
+                      className="inline-flex items-center gap-2 rounded-full border border-background/12 bg-background/5 px-5 py-3 text-sm font-semibold text-background transition-transform duration-200 hover:-translate-y-0.5"
+                    >
+                      <Icon className="h-4 w-4" />
+                      {link.label}
+                    </a>
+                  );
+                })}
+              </div>
+            </div>
+          </FadeIn>
+        </section>
+      </main>
+
+      <footer className="border-t border-border/80 py-6">
+        <div className="shell flex flex-col gap-2 text-sm text-muted-foreground md:flex-row md:items-center md:justify-between">
+          <p>© 2025 {profile.name}</p>
+          <p>Designed as a product story — minimal, sharp, and built to feel intentional.</p>
         </div>
       </footer>
     </div>
