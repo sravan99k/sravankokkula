@@ -1,9 +1,10 @@
-import { ArrowRight, ArrowUpRight, Github, Linkedin, Mail } from "lucide-react";
+import { ArrowRight, ArrowUpRight, Github, Linkedin, Mail, Sparkles } from "lucide-react";
 import { FadeIn } from "@/components/portfolio/FadeIn";
 import {
   aboutPoints,
   education,
   experience,
+  founderHighlights,
   heroStats,
   links,
   navigation,
@@ -18,15 +19,22 @@ const socialLinks = [
   { label: "GitHub", href: links.github, icon: Github },
 ];
 
+const SectionLabel = ({ children }: { children: React.ReactNode }) => (
+  <p className="font-mono text-[0.65rem] uppercase tracking-[0.28em] text-muted-foreground sm:text-xs">
+    {children}
+  </p>
+);
+
 const Index = () => {
   return (
     <div className="min-h-screen bg-background text-foreground">
+      {/* HEADER */}
       <header className="sticky top-0 z-40 border-b border-border/70 bg-background/90 backdrop-blur">
-        <div className="shell flex h-16 items-center justify-between gap-6">
-          <a href="#top" className="font-display text-base font-semibold tracking-[-0.02em]">
+        <div className="shell flex h-14 items-center justify-between gap-4 sm:h-16">
+          <a href="#top" className="font-display text-sm font-semibold tracking-[-0.02em] sm:text-base">
             {profile.shortName}
           </a>
-          <nav className="hidden items-center gap-7 md:flex">
+          <nav className="hidden items-center gap-6 md:flex">
             {navigation.map((item) => (
               <a
                 key={item.href}
@@ -37,7 +45,10 @@ const Index = () => {
               </a>
             ))}
           </nav>
-          <a href={`mailto:${profile.email}`} className="button-dark">
+          <a
+            href={`mailto:${profile.email}`}
+            className="button-dark px-4 py-2 text-xs sm:px-5 sm:py-3 sm:text-sm"
+          >
             Get in touch
           </a>
         </div>
@@ -45,21 +56,22 @@ const Index = () => {
 
       <main id="top">
         {/* HERO */}
-        <section className="shell pb-16 pt-20 md:pt-28">
+        <section className="shell pb-12 pt-14 sm:pb-16 sm:pt-20 md:pt-28">
           <FadeIn className="max-w-3xl">
-            <p className="font-mono text-xs uppercase tracking-[0.28em] text-muted-foreground">
-              {profile.role}
-            </p>
-            <h1 className="mt-6 font-display text-[clamp(2.6rem,7vw,5rem)] leading-[0.98] tracking-[-0.04em]">
+            <span className="inline-flex items-center gap-2 rounded-full border border-border bg-card px-3 py-1.5 font-mono text-[0.6rem] uppercase tracking-[0.24em] text-muted-foreground sm:text-[0.65rem]">
+              <Sparkles className="h-3 w-3" />
+              Early-stage founder · Open to build
+            </span>
+            <h1 className="mt-5 font-display text-[clamp(2.1rem,7vw,4.8rem)] leading-[1.02] tracking-[-0.04em] sm:mt-6">
               Hi, I’m {profile.shortName}.
               <br />
               <span className="text-muted-foreground">{profile.tagline}</span>
             </h1>
-            <p className="mt-6 max-w-2xl text-base leading-7 text-muted-foreground md:text-lg md:leading-8">
+            <p className="mt-5 max-w-2xl text-base leading-7 text-muted-foreground sm:mt-6 md:text-lg md:leading-8">
               {profile.intro}
             </p>
 
-            <div className="mt-8 flex flex-wrap gap-3">
+            <div className="mt-7 flex flex-wrap gap-3 sm:mt-8">
               <a href="#projects" className="button-dark">
                 See my work
                 <ArrowRight className="h-4 w-4" />
@@ -69,7 +81,7 @@ const Index = () => {
               </a>
             </div>
 
-            <div className="mt-6 flex flex-wrap items-center gap-x-5 gap-y-2 text-sm text-muted-foreground">
+            <div className="mt-6 flex flex-wrap items-center gap-x-4 gap-y-2 text-sm text-muted-foreground">
               <span>{profile.location}</span>
               <span className="hidden h-1 w-1 rounded-full bg-border md:inline-block" />
               {socialLinks.map((link, i) => {
@@ -91,10 +103,12 @@ const Index = () => {
             </div>
           </FadeIn>
 
-          <FadeIn delay={0.1} className="mt-14 grid gap-4 sm:grid-cols-3">
+          <FadeIn delay={0.1} className="mt-10 grid gap-3 sm:mt-14 sm:grid-cols-3 sm:gap-4">
             {heroStats.map((stat) => (
-              <div key={stat.label} className="panel p-6">
-                <p className="font-display text-3xl font-semibold tracking-[-0.03em]">{stat.value}</p>
+              <div key={stat.label} className="panel p-5 sm:p-6">
+                <p className="font-display text-2xl font-semibold tracking-[-0.03em] sm:text-3xl">
+                  {stat.value}
+                </p>
                 <p className="mt-2 text-sm leading-6 text-muted-foreground">{stat.label}</p>
               </div>
             ))}
@@ -102,44 +116,83 @@ const Index = () => {
         </section>
 
         {/* ABOUT */}
-        <section id="about" className="shell py-20">
-          <div className="grid gap-10 md:grid-cols-[200px_1fr]">
+        <section id="about" className="shell py-14 sm:py-20">
+          <div className="grid gap-8 md:grid-cols-[180px_1fr] md:gap-10">
             <FadeIn>
-              <p className="font-mono text-xs uppercase tracking-[0.28em] text-muted-foreground">About</p>
+              <SectionLabel>About</SectionLabel>
             </FadeIn>
             <FadeIn delay={0.05} className="space-y-5">
               {aboutPoints.map((point) => (
-                <p key={point} className="text-lg leading-8 text-foreground/85">
+                <p key={point} className="text-base leading-7 text-foreground/85 md:text-lg md:leading-8">
                   {point}
                 </p>
+              ))}
+
+              <div className="grid gap-3 pt-4 sm:grid-cols-3 sm:gap-4">
+                {founderHighlights.map((h) => (
+                  <div key={h.title} className="panel p-5">
+                    <p className="font-display text-base font-semibold tracking-[-0.02em] sm:text-lg">
+                      {h.title}
+                    </p>
+                    <p className="mt-2 text-sm leading-6 text-muted-foreground">{h.body}</p>
+                  </div>
+                ))}
+              </div>
+            </FadeIn>
+          </div>
+        </section>
+
+        {/* SKILLS */}
+        <section id="skills" className="shell py-14 sm:py-20">
+          <div className="grid gap-8 md:grid-cols-[180px_1fr] md:gap-10">
+            <FadeIn>
+              <SectionLabel>Skills</SectionLabel>
+            </FadeIn>
+            <FadeIn delay={0.05} className="grid gap-3 sm:grid-cols-2 sm:gap-4 lg:grid-cols-3">
+              {skills.map((group) => (
+                <div key={group.group} className="panel p-5 sm:p-6">
+                  <p className="font-display text-base font-semibold tracking-[-0.02em] sm:text-lg">
+                    {group.group}
+                  </p>
+                  <ul className="mt-3 flex flex-wrap gap-2">
+                    {group.items.map((item) => (
+                      <li
+                        key={item}
+                        className="rounded-full border border-border bg-background px-3 py-1 text-xs text-muted-foreground"
+                      >
+                        {item}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
               ))}
             </FadeIn>
           </div>
         </section>
 
-        {/* WORK */}
-        <section id="work" className="shell py-20">
-          <div className="grid gap-10 md:grid-cols-[200px_1fr]">
+        {/* EXPERIENCE */}
+        <section id="experience" className="shell py-14 sm:py-20">
+          <div className="grid gap-8 md:grid-cols-[180px_1fr] md:gap-10">
             <FadeIn>
-              <p className="font-mono text-xs uppercase tracking-[0.28em] text-muted-foreground">Work</p>
+              <SectionLabel>Experience</SectionLabel>
             </FadeIn>
-            <div className="space-y-6">
+            <div className="space-y-5 sm:space-y-6">
               {experience.map((job, i) => (
-                <FadeIn key={job.company} delay={i * 0.05}>
-                  <article className="panel p-7 md:p-8">
+                <FadeIn key={`${job.company}-${job.period}`} delay={i * 0.05}>
+                  <article className="panel p-6 sm:p-7 md:p-8">
                     <div className="flex flex-wrap items-baseline justify-between gap-3">
-                      <h3 className="font-display text-2xl tracking-[-0.03em] md:text-3xl">
+                      <h3 className="font-display text-xl tracking-[-0.03em] sm:text-2xl md:text-3xl">
                         {job.role}{" "}
                         <span className="text-muted-foreground">· {job.company}</span>
                       </h3>
-                      <p className="font-mono text-xs uppercase tracking-[0.2em] text-muted-foreground">
+                      <p className="font-mono text-[0.65rem] uppercase tracking-[0.2em] text-muted-foreground sm:text-xs">
                         {job.period}
                       </p>
                     </div>
                     <p className="mt-1 text-sm text-muted-foreground">{job.location}</p>
-                    <ul className="mt-6 space-y-3">
+                    <ul className="mt-5 space-y-3 sm:mt-6">
                       {job.bullets.map((b) => (
-                        <li key={b} className="flex gap-3 text-base leading-7 text-foreground/85">
+                        <li key={b} className="flex gap-3 text-sm leading-7 text-foreground/85 sm:text-base">
                           <span className="mt-2.5 h-1.5 w-1.5 shrink-0 rounded-full bg-foreground" />
                           <span>{b}</span>
                         </li>
@@ -153,19 +206,21 @@ const Index = () => {
         </section>
 
         {/* PROJECTS */}
-        <section id="projects" className="shell py-20">
-          <div className="grid gap-10 md:grid-cols-[200px_1fr]">
+        <section id="projects" className="shell py-14 sm:py-20">
+          <div className="grid gap-8 md:grid-cols-[180px_1fr] md:gap-10">
             <FadeIn>
-              <p className="font-mono text-xs uppercase tracking-[0.28em] text-muted-foreground">Projects</p>
+              <SectionLabel>Projects</SectionLabel>
             </FadeIn>
-            <div className="grid gap-5">
+            <div className="grid gap-4 sm:gap-5">
               {projects.map((project, i) => (
                 <FadeIn key={project.name} delay={i * 0.05}>
-                  <article className="panel group p-7 transition-transform duration-300 hover:-translate-y-0.5 md:p-8">
+                  <article className="panel group p-6 transition-transform duration-300 hover:-translate-y-0.5 sm:p-7 md:p-8">
                     <div className="flex flex-wrap items-center justify-between gap-3">
-                      <div className="flex items-center gap-3">
-                        <h3 className="font-display text-2xl tracking-[-0.03em] md:text-3xl">{project.name}</h3>
-                        <span className="rounded-full border border-border bg-background px-3 py-1 font-mono text-[0.65rem] uppercase tracking-[0.2em] text-muted-foreground">
+                      <div className="flex flex-wrap items-center gap-2 sm:gap-3">
+                        <h3 className="font-display text-xl tracking-[-0.03em] sm:text-2xl md:text-3xl">
+                          {project.name}
+                        </h3>
+                        <span className="rounded-full border border-border bg-background px-3 py-1 font-mono text-[0.6rem] uppercase tracking-[0.2em] text-muted-foreground">
                           {project.status}
                         </span>
                       </div>
@@ -181,7 +236,10 @@ const Index = () => {
                         </a>
                       ) : null}
                     </div>
-                    <p className="mt-4 max-w-2xl text-base leading-7 text-muted-foreground md:text-lg md:leading-8">
+                    <p className="mt-2 text-xs uppercase tracking-[0.2em] text-muted-foreground">
+                      {project.role}
+                    </p>
+                    <p className="mt-4 max-w-2xl text-sm leading-7 text-muted-foreground sm:text-base md:text-lg md:leading-8">
                       {project.summary}
                     </p>
                     <div className="mt-5 flex flex-wrap gap-2">
@@ -201,64 +259,47 @@ const Index = () => {
           </div>
         </section>
 
-        {/* SKILLS + EDUCATION */}
-        <section id="skills" className="shell py-20">
-          <div className="grid gap-10 md:grid-cols-[200px_1fr]">
+        {/* EDUCATION */}
+        <section className="shell py-14 sm:py-20">
+          <div className="grid gap-8 md:grid-cols-[180px_1fr] md:gap-10">
             <FadeIn>
-              <p className="font-mono text-xs uppercase tracking-[0.28em] text-muted-foreground">Skills</p>
+              <SectionLabel>Education</SectionLabel>
             </FadeIn>
-            <div className="space-y-10">
-              <FadeIn className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-                {skills.map((group) => (
-                  <div key={group.group} className="panel p-6">
-                    <p className="font-display text-lg font-semibold tracking-[-0.02em]">{group.group}</p>
-                    <ul className="mt-3 flex flex-wrap gap-2">
-                      {group.items.map((item) => (
-                        <li
-                          key={item}
-                          className="rounded-full border border-border bg-background px-3 py-1 text-xs text-muted-foreground"
-                        >
-                          {item}
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-                ))}
-              </FadeIn>
-
-              <FadeIn delay={0.05}>
-                <div className="panel p-7 md:p-8">
-                  <p className="font-mono text-xs uppercase tracking-[0.28em] text-muted-foreground">Education</p>
-                  <h3 className="mt-3 font-display text-2xl tracking-[-0.03em] md:text-3xl">
-                    {education.school}
-                  </h3>
-                  <p className="mt-2 text-base text-muted-foreground md:text-lg">{education.degree}</p>
-                  <p className="mt-1 text-sm text-muted-foreground">{education.period}</p>
-                </div>
-              </FadeIn>
-            </div>
+            <FadeIn delay={0.05}>
+              <div className="panel p-6 sm:p-7 md:p-8">
+                <h3 className="font-display text-xl tracking-[-0.03em] sm:text-2xl md:text-3xl">
+                  {education.school}
+                </h3>
+                <p className="mt-2 text-sm text-muted-foreground sm:text-base md:text-lg">
+                  {education.degree}
+                </p>
+                <p className="mt-1 text-sm text-muted-foreground">{education.period}</p>
+              </div>
+            </FadeIn>
           </div>
         </section>
 
         {/* CONTACT */}
-        <section id="contact" className="shell py-24">
+        <section id="contact" className="shell py-16 sm:py-24">
           <FadeIn>
-            <div className="panel-dark px-8 py-14 text-center md:px-12 md:py-20">
-              <p className="font-mono text-xs uppercase tracking-[0.28em] text-background/60">Contact</p>
-              <h2 className="mx-auto mt-4 max-w-3xl font-display text-4xl leading-[1] tracking-[-0.04em] md:text-6xl">
+            <div className="panel-dark px-6 py-12 text-center sm:px-8 sm:py-14 md:px-12 md:py-20">
+              <p className="font-mono text-[0.65rem] uppercase tracking-[0.28em] text-background/60 sm:text-xs">
+                Contact
+              </p>
+              <h2 className="mx-auto mt-4 max-w-3xl font-display text-3xl leading-[1.05] tracking-[-0.04em] sm:text-4xl md:text-6xl">
                 Let’s build something good.
               </h2>
-              <p className="mx-auto mt-5 max-w-xl text-base leading-7 text-background/72 md:text-lg">
-                I’m open to AI projects, product roles, and serious startup ideas. The fastest way to reach me is email.
+              <p className="mx-auto mt-4 max-w-xl text-sm leading-7 text-background/72 sm:mt-5 sm:text-base md:text-lg">
+                I’m open to AI projects, product roles, and serious startup ideas. Email is the fastest way to reach me.
               </p>
 
-              <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
+              <div className="mt-7 flex flex-wrap items-center justify-center gap-3 sm:mt-8">
                 <a
                   href={`mailto:${profile.email}`}
-                  className="inline-flex items-center gap-2 rounded-full bg-background px-6 py-3 text-sm font-semibold text-foreground transition-transform hover:-translate-y-0.5"
+                  className="inline-flex items-center gap-2 rounded-full bg-background px-5 py-3 text-sm font-semibold text-foreground transition-transform hover:-translate-y-0.5 sm:px-6"
                 >
                   <Mail className="h-4 w-4" />
-                  {profile.email}
+                  <span className="break-all">{profile.email}</span>
                 </a>
                 {socialLinks.slice(1).map((link) => {
                   const Icon = link.icon;
