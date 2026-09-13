@@ -1,18 +1,14 @@
-import projectNovo from "@/assets/project-novo.jpg";
-import projectVoice from "@/assets/project-voice.jpg";
-import projectLyric from "@/assets/project-lyric.jpg";
-import projectNeuro from "@/assets/project-neuro.jpg";
-
 export const profile = {
-  name: "Sravan Kumar Kokkula",
+  name: "Sravan Kokkula",
   shortName: "Sravan",
-  role: "Software Engineer · Early-stage Founder",
+  role: "PRODUCT ENGINEER · AI / LLM SYSTEMS",
   location: "Hyderabad, India",
   email: "sravankokkula2004@gmail.com",
   resumeUrl: "/Sravan_Kumar_Resume.docx",
-  tagline: "I build real products in AI, health, and web.",
+  tagline: "I turn ideas into products that actually ship.",
   intro:
-    "I am a software engineer and an early founder. I build full products on my own — frontend, backend, AI, and database. I like turning small ideas into things people can actually use.",
+    "I’m Sravan Kumar, a Product Engineer focused on building end-to-end products across full-stack development, AI/LLM systems, and cloud infrastructure. I enjoy solving unclear problems, turning ideas into practical solutions, and building products that are made to ship.",
+  image: "/portfoliopng.png",
 };
 
 export const navigation = [
@@ -23,39 +19,13 @@ export const navigation = [
   { label: "Contact", href: "#contact" },
 ];
 
-export const heroStats = [
-  { value: "2+", label: "Years building products" },
-  { value: "5+", label: "Projects shipped" },
-  { value: "Full", label: "Stack + AI" },
-];
-
-export const aboutPoints = [
-  "I am a software engineer at SAAP Technologies and I also build my own products on the side.",
-  "I work end to end — product idea, design, frontend, backend, database, and AI. I do not wait for a team to start something.",
-  "I think like a founder. I want to keep building useful products in AI, health, and education.",
-];
-
-export const founderHighlights = [
-  {
-    title: "Builder mindset",
-    body: "I ship on my own. I do not need a big team to start.",
-  },
-  {
-    title: "Full-stack + AI",
-    body: "React, Node, Postgres, and LLMs — from database to UI.",
-  },
-  {
-    title: "Product thinking",
-    body: "I care about users, not just code. I design the flow.",
-  },
-];
 
 export const skills = [
   { group: "Languages", items: ["JavaScript", "TypeScript", "Python", "SQL"] },
-  { group: "Frontend", items: ["React", "Next.js basics", "Tailwind CSS", "HTML", "CSS"] },
+  { group: "Frontend", items: ["React", "Next.js", "Tailwind CSS", "HTML", "CSS"] },
   { group: "Backend", items: ["Node.js", "Express", "REST APIs", "Auth", "Webhooks"] },
   { group: "Database", items: ["PostgreSQL", "Schema design", "RBAC", "Firebase"] },
-  { group: "AI", items: ["LLM APIs", "Prompt design", "Chat pipelines", "CNN basics"] },
+  { group: "AI", items: ["LLM APIs", "Prompt design", "Chat pipelines", "CNNs"] },
   { group: "Tools & Cloud", items: ["Git & GitHub", "Postman", "Vercel", "Azure", "Razorpay"] },
 ];
 
@@ -88,43 +58,44 @@ export const experience = [
 
 export const projects = [
   {
-    name: "Novo Wellness",
-    role: "Software Engineer",
+    name: "Novoei.com",
+    role: "Company Project",
     status: "Live",
-    image: projectNovo,
+    image: "/nv.webp",
     summary:
-      "Mental health platform for school students. Assessments, games, AI chatbot, and dashboards for teachers and admins.",
-    stack: ["React", "TypeScript", "Node.js", "PostgreSQL"],
-    link: "https://novowellness.ai",
+      "Novo empowers schools with a structured, data-led approach to student wellness and emotional intelligence. Features include systematic assessments, interactive games, an AI chatbot, and comprehensive dashboards for educators.",
+    stack: ["React", "TypeScript", "Node.js", "Express", "PostgreSQL", "Tailwind CSS", "Razorpay", "LLM APIs"],
+    link: "https://novoei.com",
   },
   {
-    name: "Lyric Video Maker",
-    role: "Solo founder",
+    name: "Lyric Video Makers (LVM)",
+    role: "Freelancing Project",
     status: "Live",
-    image: projectLyric,
+    image: "/lvm.png",
     summary:
-      "A simple web tool to turn songs into lyric videos. Upload a track, sync the words, and export a clean video.",
-    stack: ["React", "TypeScript", "Vercel"],
+      "A professional lyric video production platform serving as the digital storefront for musicians and artists. The platform supports a service that has delivered 350+ videos to over 200 artists worldwide.",
+    stack: ["React", "TypeScript", "Next.js", "Framer Motion", "Vercel", "Tailwind CSS"],
     link: "https://lvm.vercel.app/",
   },
   {
-    name: "AI Voice App",
-    role: "Solo founder",
-    status: "Building",
-    image: projectVoice,
+    name: "Pynex.info",
+    role: "Founder and Developer",
+    status: "Live",
+    image: "/pynex.webp",
     summary:
-      "Voice app to help people practice spoken English without fear. Real-time voice loop, memory, and simple feedback.",
-    stack: ["Python", "TypeScript", "React", "PostgreSQL"],
-    link: "https://github.com/sravan99k/ai-voice",
+      "An EdTech platform and Developer OS offering comprehensive curriculums for AI Engineering, Python, and Vibe Coding. Features interactive lessons teaching Cursor, LangGraph, and Agentic AI workflows.",
+    stack: ["React", "Node.js", "Express", "MongoDB", "Tailwind CSS", "Vite", "JWT Auth"],
+    link: "https://pynex.info",
   },
   {
-    name: "Novo Neuro Tech",
-    role: "Solo project",
-    status: "Prototype",
-    image: projectNeuro,
+    name: "SOS Game",
+    role: "Developer (Fun Project)",
+    status: "Completed",
+    image: "/sos.png",
     summary:
-      "CNN model that gives a risk score for Alzheimer’s and Parkinson’s from medical scan images.",
-    stack: ["Python", "CNN", "Kaggle datasets"],
+      "A React + TypeScript playground with a paper-and-ink aesthetic implementing the classic SOS grid game. Features AI vs Player, local multiplayer, and scaffolded architecture for a live Tombola experience.",
+    stack: ["React", "TypeScript", "Tailwind CSS", "Custom CSS", "AI Logic"],
+    link: "https://sos-bord-game.vercel.app/",
   },
 ];
 
