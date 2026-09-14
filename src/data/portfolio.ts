@@ -38,49 +38,32 @@ export const skills = [
 
 export const experience = [
   {
-    role: "Software Engineer",
-    company: "SAAP Technologies",
-    period: "Jun 2025 – Sep 2026",
+    role: "Software Developer",
+    company: "Novo",
+    period: "Jun 2025 – Sep 2025",
     location: "Hyderabad",
-    focus: "Core Engineer — Novo",
-    summary:
-      "Worked as a core member of the team from research and product development through implementation and production of a multi-tenant SaaS platform for schools.",
     bullets: [
-      "Contributed from product research and requirements through architecture, development, integrations, and testing.",
-      "Built and maintained a multi-tenant SaaS platform supporting multiple organizational stakeholders and role-based access.",
-      "Developed 40+ product pages across student, teacher, school administrator, organization, and super-admin workflows.",
-      "Built a phase-wise student assessment system and risk-scoring algorithm.",
-      "Developed student wellness features including mood tracking, journals, goals, and cognitive activities.",
-      "Built 10+ cognitive games with scoring and reporting.",
-      "Built 30+ resources and tools for student wellbeing and engagement.",
-      "Integrated Gemini-powered chatbot capabilities and optimized LLM prompts, token usage, and response constraints.",
-      "Implemented AI rate limiting and token controls to manage usage and cost.",
-      "Contributed to a voice conversational system involving STT, LLM processing, and TTS.",
-      "Integrated Sarvam AI speech capabilities.",
-      "Worked with LangChain for LLM application workflows.",
-      "Built teacher dashboards with tenant and student data isolation.",
-      "Built school administrator and super-admin workflows for managing schools, teachers, students, configurations, and features.",
-      "Implemented risk-trigger workflows to surface relevant risk signals to teachers.",
-      "Worked across frontend, backend, database, AI integrations, and deployment.",
+      "Core member involved in the end-to-end lifecycle from research to development.",
+      "Architected and built a multi-tenant SaaS product with 5 stakeholders, developing over 40+ pages.",
+      "Engineered phase-wise assessments, a risk scoring algorithm, and a comprehensive wellness dashboard featuring a mood tracker, journals, and goals.",
+      "Developed 10+ interactive cognitive games and integrated 30+ resource tools.",
+      "Built AI chatbot and voice bots (STT/TTS) with immediate alert triggers to teachers upon detecting student risk.",
+      "Integrated Gemini LLM, implemented prompt optimization, token usage tracking, and rate limiting.",
+      "Built isolated dashboards for teachers, school admins, and super admins for complete feature and data management.",
     ],
-    tech: ["React", "TypeScript", "Tailwind CSS", "Node.js", "REST APIs", "Drizzle ORM", "PostgreSQL", "Azure", "Vercel", "Gemini", "Sarvam AI", "LangChain"],
+    tech: ["React", "TypeScript", "Tailwind CSS", "Node.js", "REST APIs", "Drizzle ORM", "PostgreSQL", "Azure", "Vercel", "Gemini", "Sarvam AI", "LangChain"]
   },
   {
-    role: "Software Engineer Intern",
-    company: "SAAP Technologies",
+    role: "Software Developer Intern",
+    company: "Medical Research",
     period: "Feb 2025 – May 2025",
     location: "Hyderabad",
-    focus: "Medical AI Research",
-    summary:
-      "Worked on early-stage medical imaging research exploring ML-based risk prediction using medical scan datasets.",
     bullets: [
-      "Worked with sample medical imaging datasets related to Parkinson's disease, Alzheimer's disease, and epilepsy.",
-      "Prepared and worked with medical scan and image datasets for ML experiments.",
-      "Trained and evaluated CNN-based models for image classification and risk-prediction experiments.",
-      "Explored predicting risk percentages from medical imaging data.",
-      "Contributed to research and experimentation before transitioning into product engineering.",
+      "Conducted medical research leveraging datascan images to predict risk percentages for Parkinson's, Alzheimer's, and Epilepsy.",
+      "Preprocessed sample datasets and trained Convolutional Neural Networks (CNNs) to analyze medical imaging data.",
+      "Evaluated ML model performance to establish reliable risk-prediction algorithms before transitioning into full-time product development.",
     ],
-    tech: ["Python", "CNN", "Machine Learning", "Medical Imaging", "Image Datasets"],
+    tech: ["Python", "CNN", "Machine Learning", "Medical Imaging", "Image Datasets"]
   },
 ];
 
@@ -98,7 +81,7 @@ export const projects = [
     },
     summary:
       "A student wellbeing and emotional intelligence SaaS platform for schools, with assessments, cognitive games, wellbeing tools, dashboards, and an AI assistant for teachers and school administrators.",
-    stack: ["React", "TypeScript", "Node.js", "Express", "PostgreSQL", "Tailwind CSS", "Razorpay", "LLM APIs"],
+    stack: ["React", "TypeScript", "Node.js", "PostgreSQL", "Tailwind CSS", "LLM APIs"],
     link: "https://novoei.com",
   },
   {
@@ -130,7 +113,7 @@ export const projects = [
     },
     summary:
       "An EdTech platform and Developer OS offering comprehensive curriculums for AI Engineering, Python, and Vibe Coding. Features interactive lessons teaching Cursor, LangGraph, and Agentic AI workflows.",
-    stack: ["React", "Node.js", "Express", "MongoDB", "Tailwind CSS", "Vite", "JWT Auth"],
+    stack: ["React", "Node.js", "Razorpay", "Tailwind CSS", "Vite", "JWT Auth"],
     link: "https://pynex.info",
   },
   {
