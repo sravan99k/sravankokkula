@@ -55,7 +55,7 @@ const Index = () => {
         <div className="flex h-14 items-center justify-between px-5 sm:px-8">
           <a href="#top" className="font-display text-base font-bold tracking-tight text-foreground transition-all hover:text-blue-600 flex items-center gap-2.5">
             <div className="flex h-7 w-7 items-center justify-center rounded-full overflow-hidden shadow-sm border border-blue-200">
-              <img src="/sravanl.jpg" alt="Logo" className="h-full w-full object-cover" />
+              <img src="/images/sravan-avatar.webp" alt="" width="96" height="96" className="h-full w-full object-cover" />
             </div>
             {profile.name}
           </a>
@@ -96,7 +96,7 @@ const Index = () => {
         {/* HERO */}
         <section className="max-w-[1400px] mx-auto w-full px-6 md:px-12 pb-10 pt-16 sm:pb-14 md:pt-28">
           <FadeIn className="w-full">
-            <div className="flex flex-col-reverse gap-8 md:flex-row md:items-center md:justify-between">
+            <div className="flex flex-col gap-8 md:flex-row md:items-center md:justify-between">
               <div className="flex-1 pt-8 md:pt-0 md:pr-10">
                 <span className="inline-flex items-center gap-2 font-mono text-[0.65rem] font-semibold uppercase tracking-widest text-muted-foreground">
                   {profile.role}
@@ -131,20 +131,28 @@ const Index = () => {
               </div>
 
               {profile.image && (
-                <div className="w-full md:w-[45%] lg:w-[45%] flex justify-end relative group mt-8 md:mt-0">
+                <div className="relative mt-2 flex w-full min-w-0 justify-center overflow-hidden md:mt-0 md:w-[45%] md:justify-end lg:w-[45%]">
                   {/* Outer massive glow */}
-                  <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full aspect-square bg-blue-500/15 blur-[100px] transition-all duration-1000 group-hover:bg-blue-500/25 group-hover:scale-110 rounded-full pointer-events-none"></div>
+                  <div className="absolute left-1/2 top-1/2 aspect-square w-full -translate-x-1/2 -translate-y-1/2 rounded-full bg-blue-500/15 blur-[100px] pointer-events-none"></div>
                   
                   {/* Inner intense core glow */}
-                  <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[70%] aspect-square bg-blue-400/20 blur-[60px] mix-blend-screen transition-all duration-1000 group-hover:bg-blue-400/30 group-hover:scale-110 rounded-full pointer-events-none"></div>
+                  <div className="absolute left-1/2 top-1/2 aspect-square w-[70%] -translate-x-1/2 -translate-y-1/2 rounded-full bg-blue-400/20 blur-[60px] mix-blend-screen pointer-events-none"></div>
                   
-                  <div className="relative w-full flex items-end justify-center z-10">
-                    <img
-                      src={profile.image}
-                      alt={profile.name}
-                      loading="eager"
-                      className="w-full h-auto max-h-[85vh] object-contain drop-shadow-[0_15px_35px_rgba(59,130,246,0.3)] transition-all duration-700 ease-out group-hover:drop-shadow-[0_30px_60px_rgba(59,130,246,0.5)] group-hover:-translate-y-2 group-hover:scale-[1.02]"
-                    />
+                  <div className="relative z-10 flex aspect-square w-full max-w-[32rem] items-end justify-center">
+                    <picture className="block h-full w-full">
+                      <source type="image/avif" srcSet={profile.image.avifSrcSet} sizes="(max-width: 767px) calc(100vw - 48px), 45vw" />
+                      <source type="image/webp" srcSet={profile.image.webpSrcSet} sizes="(max-width: 767px) calc(100vw - 48px), 45vw" />
+                      <img
+                        src={profile.image.fallback}
+                        alt={`Professional portrait of ${profile.name}`}
+                        width={profile.image.width}
+                        height={profile.image.height}
+                        loading="eager"
+                        fetchPriority="high"
+                        decoding="sync"
+                        className="h-full w-full object-contain object-bottom drop-shadow-[0_15px_35px_rgba(59,130,246,0.3)]"
+                      />
+                    </picture>
                   </div>
                 </div>
               )}
@@ -180,7 +188,7 @@ const Index = () => {
                     <FadeIn key={group.group} delay={index * 0.1}>
                       <div className="h-full group bg-white/70 backdrop-blur-md rounded-[1.5rem] p-6 sm:p-8 border border-white shadow-sm transition-all hover:shadow-lg hover:bg-white/90 hover:-translate-y-1 flex flex-col items-center">
                         <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-to-br from-blue-100 to-blue-50 text-blue-600 shadow-sm border border-blue-200/60 mb-5">
-                          {group.group === "Frontend" ? <Layout className="h-5 w-5" /> : group.group === "Backend" ? <Code className="h-5 w-5" /> : <Cloud className="h-5 w-5" />}
+                          {group.group === "Product Engineering" ? <Layout className="h-5 w-5" /> : group.group.includes("AI") ? <Brain className="h-5 w-5" /> : group.group === "Infrastructure" ? <Cloud className="h-5 w-5" /> : <Code className="h-5 w-5" />}
                         </div>
                         
                         <h3 className="font-display text-xl font-bold tracking-tight text-foreground mb-4">
@@ -242,6 +250,9 @@ const Index = () => {
                             </span>
                           </div>
                         </div>
+
+                         <p className="mb-5 text-sm font-bold text-blue-600">{job.focus}</p>
+                         <p className="mb-6 text-sm leading-relaxed text-slate-600 sm:text-base">{job.summary}</p>
                         
                         <ul className="space-y-4">
                           {job.bullets.map((b) => (
@@ -251,6 +262,13 @@ const Index = () => {
                             </li>
                           ))}
                         </ul>
+                         <div className="mt-7 flex flex-wrap gap-2 border-t border-slate-200/60 pt-6">
+                           {job.tech.map((tech) => (
+                             <span key={tech} className="rounded-lg border border-slate-200/60 bg-slate-100/80 px-2.5 py-1 text-xs font-semibold text-slate-600">
+                               {tech}
+                             </span>
+                           ))}
+                         </div>
                       </article>
                     </FadeIn>
                   ))}
@@ -288,12 +306,19 @@ const Index = () => {
                     <FadeIn key={project.name} delay={i * 0.1}>
                       <article className="h-full group bg-white/70 backdrop-blur-md rounded-[1.5rem] p-6 sm:p-8 border border-white shadow-sm transition-all duration-300 hover:shadow-xl hover:bg-white/90 hover:-translate-y-2 flex flex-col">
                         <div className="relative h-48 sm:h-56 w-full shrink-0 overflow-hidden rounded-2xl bg-slate-50 border border-slate-200/60 flex items-center justify-center p-6 mb-8 transition-transform duration-700 group-hover:shadow-inner">
-                          <img
-                            src={project.image}
-                            alt={`${project.name} preview`}
-                            loading="lazy"
-                            className="h-full w-full object-contain transition-transform duration-700 group-hover:scale-110"
-                          />
+                           <picture className="block h-full w-full">
+                             <source type="image/avif" srcSet={project.image.avifSrcSet} sizes="(max-width: 767px) calc(100vw - 80px), 420px" />
+                             <source type="image/webp" srcSet={project.image.webpSrcSet} sizes="(max-width: 767px) calc(100vw - 80px), 420px" />
+                             <img
+                               src={project.image.fallback}
+                               alt={`${project.name} preview`}
+                               width={project.image.width}
+                               height={project.image.height}
+                               loading="lazy"
+                               decoding="async"
+                               className="h-full w-full object-contain transition-transform duration-700 group-hover:scale-110"
+                             />
+                           </picture>
                         </div>
                         
                         <div className="flex flex-col flex-1">
